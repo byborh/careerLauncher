@@ -1,6 +1,6 @@
-# BigTechInbox 🚀
+# Career Launcher 🚀
 
-**BigTechInbox** is a curated collection of public emails from top tech companies, designed to help students and early-career professionals send personalized internship or spontaneous job applications efficiently.
+**Career Launcher** is a curated collection of public emails from top tech companies, designed to help students and early-career professionals send personalized internship or spontaneous job applications efficiently.
 
 ## Features
 
