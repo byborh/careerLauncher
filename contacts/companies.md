@@ -11,3 +11,4 @@
 | Tastemade      | tastemade.com  | hello@tastemade.com          | For questions about everything          | Global         | Destination for food lovers and home chefs alike.       | https://www.tastemade.com/contact | 2025-10-21    |
 | Splunk      | splunk.com  | accessiblecareers@splunk.com          | For Employment          | Global         | A company that produces software for searching, tracking, and analyzing machine data.       | https://www.splunk.com/en_us/careers/how-we-hire.html | 2025-10-22    |
 | Garmin      | garmin.com  | careers.ge@garmin.com          | For Employment          | Global         | It provides innovative GPS technology in various markets.       | https://www.garmin.com/en-IE/careers/ | 2025-10-23    |
+| Flexe      | flexe.com  | hello@flexe.com          | For everythings          | Global         | Flexe offers flexible logistics warehousing.       | https://www.flexe.com/careers | 2025-10-24    |
