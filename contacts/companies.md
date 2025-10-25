@@ -12,3 +12,4 @@
 | Splunk      | splunk.com  | accessiblecareers@splunk.com          | For Employment          | Global         | A company that produces software for searching, tracking, and analyzing machine data.       | https://www.splunk.com/en_us/careers/how-we-hire.html | 2025-10-22    |
 | Garmin      | garmin.com  | careers.ge@garmin.com          | For Employment          | Global         | It provides innovative GPS technology in various markets.       | https://www.garmin.com/en-IE/careers/ | 2025-10-23    |
 | Flexe      | flexe.com  | hello@flexe.com          | For everythings          | Global         | Flexe offers flexible logistics warehousing.       | https://www.flexe.com/careers | 2025-10-24    |
+| Toyota      | toyotaofmanhattan.com  | careers@toyotaofmanhattan.com           | For Employment          | Manhattan, US         | One of the world's largest automobile manufacturers.       | https://www.toyotaofmanhattan.com/join-our-team.htm | 2025-10-25    |
