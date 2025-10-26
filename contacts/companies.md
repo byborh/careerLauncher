@@ -13,3 +13,4 @@
 | Garmin      | garmin.com  | careers.ge@garmin.com          | For Employment          | Global         | It provides innovative GPS technology in various markets.       | https://www.garmin.com/en-IE/careers/ | 2025-10-23    |
 | Flexe      | flexe.com  | hello@flexe.com          | For everythings          | Global         | Flexe offers flexible logistics warehousing.       | https://www.flexe.com/careers | 2025-10-24    |
 | Toyota      | toyotaofmanhattan.com  | careers@toyotaofmanhattan.com           | For Employment          | Manhattan, US         | One of the world's largest automobile manufacturers.       | https://www.toyotaofmanhattan.com/join-our-team.htm | 2025-10-25    |
+| Cerebras      | cerebras.ai  | tom@cerebras.net           | For Employment          | Global         | the go-to platform for fast and effortless AI training.       | https://coda.io/@cerebras-careers/cerebras-interviewing-guide/college-hiring-cerebras-7 | 2025-10-26    |
