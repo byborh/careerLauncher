@@ -53,3 +53,9 @@ This project is open-source under the MIT License. See `LICENSE` for details.
 | The Walt Disney Company      | disney.com  | Candidate.Accommodations@Disney.com           | For Employment          | Global         | The world's leading entertainment group.       | https://sites.disney.com/lifeatdisney/career-opportunities/ | 2025-11-03    |
 | ABB      | global.abb  | US-Askhr@abb.com           | For Employment          | Global         | Swedish-Swiss multinational company that is primarily active in products for electricity transmission and automation.       | https://careers.abb/us/en/equal-employment-opportunity-and-affirmative-action | 2025-11-03    |
 | Aurora Innovations      | aurora-innovations.com  |  careers@aurora-innovations.com           | For Employment          | Global         | An American company specializing in the development of autonomous driving systems.       | https://aurora-innovations.com/careers/ | 2025-11-04    |
+| Triafed      | triafed.com  | hr@triafed.com           | For Employment          | Global         | Tria Federal delivers digital services and technology solutions that support the health and safety of veterans etc...       | https://triafed.com/careers/ | 2025-11-04    |
+
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=byborh/careerLauncher&type=date&legend=top-left)](https://www.star-history.com/#byborh/careerLauncher&type=date&legend=top-left)
