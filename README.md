@@ -55,6 +55,7 @@ This project is open-source under the MIT License. See `LICENSE` for details.
 | Aurora Innovations      | aurora-innovations.com  |  careers@aurora-innovations.com           | For Employment          | Global         | An American company specializing in the development of autonomous driving systems.       | https://aurora-innovations.com/careers/ | 2025-11-04    |
 | Triafed      | triafed.com  | hr@triafed.com           | For Employment          | Global         | Tria Federal delivers digital services and technology solutions that support the health and safety of veterans etc...       | https://triafed.com/careers/ | 2025-11-04    |
 | HNTB      | hntb.com  | talentacquisition@hntb.com           | For Employment          | Global         | An American architectural and infrastructure design firm       | https://www.hntb.com/contact/ | 2025-11-07    |
+| GlossGenius      | glossgenius.com  | careers@glossgenius.com           | For Employment          | Global         | The all-in-one booking, payments and POS solution       | https://job-boards.greenhouse.io/glossgenius | 2025-11-07    |
 
 
 ## Star History
