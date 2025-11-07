@@ -54,6 +54,7 @@ This project is open-source under the MIT License. See `LICENSE` for details.
 | ABB      | global.abb  | US-Askhr@abb.com           | For Employment          | Global         | Swedish-Swiss multinational company that is primarily active in products for electricity transmission and automation.       | https://careers.abb/us/en/equal-employment-opportunity-and-affirmative-action | 2025-11-03    |
 | Aurora Innovations      | aurora-innovations.com  |  careers@aurora-innovations.com           | For Employment          | Global         | An American company specializing in the development of autonomous driving systems.       | https://aurora-innovations.com/careers/ | 2025-11-04    |
 | Triafed      | triafed.com  | hr@triafed.com           | For Employment          | Global         | Tria Federal delivers digital services and technology solutions that support the health and safety of veterans etc...       | https://triafed.com/careers/ | 2025-11-04    |
+| HNTB      | hntb.com  | talentacquisition@hntb.com           | For Employment          | Global         | An American architectural and infrastructure design firm       | https://www.hntb.com/contact/ | 2025-11-07    |
 
 
 ## Star History
