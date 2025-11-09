@@ -58,6 +58,7 @@ This project is open-source under the MIT License. See `LICENSE` for details.
 | GlossGenius      | glossgenius.com  | careers@glossgenius.com           | For Employment          | Global         | The all-in-one booking, payments and POS solution       | https://job-boards.greenhouse.io/glossgenius | 2025-11-07    |
 | Keysight      | keysight.com  | job_posting@Keysight.com           | USA          | Global         | it empowers innovators with software-centric design, emulation, and test solutions       | https://careers.keysight.com/location-united-states | 2025-11-07    |
 | Barclays       | home.barclays  | yourresourcingsupport@barclays.com           | USA          | Global         | British universal bank       | https://search.jobs.barclays/adjustments-to-the-recruitment-process | 2025-11-08    |
+| Dexcom       | dexcom.com  | talentacquisition@dexcom.com           | USA          | Global         | Healthcare company that develops, manufactures, produces and distributes a line of continuous glucose monitoring (CGM) systems for diabetes management       | https://www.indeed.com/q-dexcom-jobs.html?vjk=4c122bffa82bba34 | 2025-11-09    |
 
 
 ## Star History
