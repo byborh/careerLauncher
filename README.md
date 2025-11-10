@@ -57,8 +57,9 @@ This project is open-source under the MIT License. See `LICENSE` for details.
 | HNTB      | hntb.com  | talentacquisition@hntb.com           | For Employment          | Global         | An American architectural and infrastructure design firm       | https://www.hntb.com/contact/ | 2025-11-07    |
 | GlossGenius      | glossgenius.com  | careers@glossgenius.com           | For Employment          | Global         | The all-in-one booking, payments and POS solution       | https://job-boards.greenhouse.io/glossgenius | 2025-11-07    |
 | Keysight      | keysight.com  | job_posting@Keysight.com           | USA          | Global         | it empowers innovators with software-centric design, emulation, and test solutions       | https://careers.keysight.com/location-united-states | 2025-11-07    |
-| Barclays       | home.barclays  | yourresourcingsupport@barclays.com           | USA          | Global         | British universal bank       | https://search.jobs.barclays/adjustments-to-the-recruitment-process | 2025-11-08    |
-| Dexcom       | dexcom.com  | talentacquisition@dexcom.com           | USA          | Global         | Healthcare company that develops, manufactures, produces and distributes a line of continuous glucose monitoring (CGM) systems for diabetes management       | https://www.indeed.com/q-dexcom-jobs.html?vjk=4c122bffa82bba34 | 2025-11-09    |
+| Barclays       | home.barclays  | yourresourcingsupport@barclays.com           | For Employment          | Global         | British universal bank       | https://search.jobs.barclays/adjustments-to-the-recruitment-process | 2025-11-08    |
+| Dexcom       | dexcom.com  | talentacquisition@dexcom.com           | For Employment          | Global         | Healthcare company that develops, manufactures, produces and distributes a line of continuous glucose monitoring (CGM) systems for diabetes management       | https://www.indeed.com/q-dexcom-jobs.html?vjk=4c122bffa82bba34 | 2025-11-09    |
+| Midmark       | midmark.in  | careers@midmark.com           | For Employment          | Global         | It manufactures medical, dental, and veterinary products and provides related services       | https://www.midmark.in/careers-2/ | 2025-11-10    |
 
 
 ## Star History
