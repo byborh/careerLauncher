@@ -62,6 +62,6 @@ This project is open-source under the MIT License. See `LICENSE` for details.
 | Midmark       | midmark.in  | careers@midmark.com           | For Employment          | Global         | It manufactures medical, dental, and veterinary products and provides related services       | https://www.midmark.in/careers-2/ | 2025-11-10    |
 
 
-## Star History
+## Star History of CareerLauncher 
 
 [![Star History Chart](https://api.star-history.com/svg?repos=byborh/careerLauncher&type=date&legend=top-left)](https://www.star-history.com/#byborh/careerLauncher&type=date&legend=top-left)
