@@ -60,6 +60,7 @@ This project is open-source under the MIT License. See `LICENSE` for details.
 | Barclays       | home.barclays  | yourresourcingsupport@barclays.com           | For Employment          | Global         | British universal bank       | https://search.jobs.barclays/adjustments-to-the-recruitment-process | 2025-11-08    |
 | Dexcom       | dexcom.com  | talentacquisition@dexcom.com           | For Employment          | Global         | Healthcare company that develops, manufactures, produces and distributes a line of continuous glucose monitoring (CGM) systems for diabetes management       | https://www.indeed.com/q-dexcom-jobs.html?vjk=4c122bffa82bba34 | 2025-11-09    |
 | Midmark       | midmark.in  | careers@midmark.com           | For Employment          | Global         | It manufactures medical, dental, and veterinary products and provides related services       | https://www.midmark.in/careers-2/ | 2025-11-10    |
+| BAE Systems       | baesystems.com  | accessibility@baesystems.com           | For Employment          | Global         | BAE Systems is a British company operating in the defense and aerospace sectors.       | https://jobs.baesystems.com/global/en/search-results | 2025-11-13    |
 
 
 ## Star History
