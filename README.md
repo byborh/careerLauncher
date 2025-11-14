@@ -61,8 +61,9 @@ This project is open-source under the MIT License. See `LICENSE` for details.
 | Dexcom       | dexcom.com  | talentacquisition@dexcom.com           | For Employment          | Global         | Healthcare company that develops, manufactures, produces and distributes a line of continuous glucose monitoring (CGM) systems for diabetes management       | https://www.indeed.com/q-dexcom-jobs.html?vjk=4c122bffa82bba34 | 2025-11-09    |
 | Midmark       | midmark.in  | careers@midmark.com           | For Employment          | Global         | It manufactures medical, dental, and veterinary products and provides related services       | https://www.midmark.in/careers-2/ | 2025-11-10    |
 | BAE Systems       | baesystems.com  | accessibility@baesystems.com           | For Employment          | Global         | BAE Systems is a British company operating in the defense and aerospace sectors.       | https://jobs.baesystems.com/global/en/search-results | 2025-11-13    |
+| Northrop Grumman       | northropgrumman.com  | ngc@myworkday.com           | For Employment          | Global         | It is evolving in the aerospace and defense sectors.       | https://www.northropgrumman.com/careers/early-careers-faqs | 2025-11-14    |
 
 
-## Star History
+## Star History of CareerLauncher 
 
 [![Star History Chart](https://api.star-history.com/svg?repos=byborh/careerLauncher&type=date&legend=top-left)](https://www.star-history.com/#byborh/careerLauncher&type=date&legend=top-left)
