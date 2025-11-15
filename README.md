@@ -62,6 +62,8 @@ This project is open-source under the MIT License. See `LICENSE` for details.
 | Midmark       | midmark.in  | careers@midmark.com           | For Employment          | Global         | It manufactures medical, dental, and veterinary products and provides related services       | https://www.midmark.in/careers-2/ | 2025-11-10    |
 | BAE Systems       | baesystems.com  | accessibility@baesystems.com           | For Employment          | Global         | BAE Systems is a British company operating in the defense and aerospace sectors.       | https://jobs.baesystems.com/global/en/search-results | 2025-11-13    |
 | Northrop Grumman       | northropgrumman.com  | ngc@myworkday.com           | For Employment          | Global         | It is evolving in the aerospace and defense sectors.       | https://www.northropgrumman.com/careers/early-careers-faqs | 2025-11-14    |
+| I SEE U       | you haven’t starred the project  | 👀           | For STAR          | PUT START         | It is evolving in the aerospace and defense sectors.       | I see you still haven’t starred or followed—your stealth is unmatched. Your support helps me find new companies for you.
+ | 2025-11-15    |
 
 
 ## Star History of CareerLauncher 
