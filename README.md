@@ -65,6 +65,7 @@ This project is open-source under the MIT License. See `LICENSE` for details.
 | I SEE U       | you haven’t starred the project  | 👀           | For STAR          | PUT START         | It is evolving in the aerospace and defense sectors.       | I see you still haven’t starred or followed—your stealth is unmatched. Your support helps me find new companies for you.
  | 2025-11-15    |
 | Arxanima       | arxanima.com  | talent@arxanima.com           | For Employment          | Europe         | Animation, Motion Capture... in their studios around Europe.       | https://arxanima.com/career | 2025-11-16    |
+| Bishopfox       | bishopfox.com  | careers@bishopfox.com           | For Employment          | Global         | Bishop Fox offensive security services help you find and fix vulnerabilities before they become incidents.       | https://bishopfox.com/careers | 2025-11-18    |
 
 
 ## Star History of CareerLauncher 
