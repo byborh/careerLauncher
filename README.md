@@ -66,6 +66,7 @@ This project is open-source under the MIT License. See `LICENSE` for details.
  | 2025-11-15    |
 | Arxanima       | arxanima.com  | talent@arxanima.com           | For Employment          | Europe         | Animation, Motion Capture... in their studios around Europe.       | https://arxanima.com/career | 2025-11-16    |
 | Bishopfox       | bishopfox.com  | careers@bishopfox.com           | For Employment          | Global         | Bishop Fox offensive security services help you find and fix vulnerabilities before they become incidents.       | https://bishopfox.com/careers | 2025-11-18    |
+| Hunt Oil Company       | huntoil.com  | fraudalert@huntoil.com           | For everythings          | Global         | Enterprise engaged in traditional exploration, unconventional resource plays, complex pipeline and processing operations.       | https://demo.huntconsolidated.com/hoc/careers.aspx | 2025-11-19    |
 
 
 ## Star History of CareerLauncher 
