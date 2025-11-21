@@ -68,6 +68,7 @@ This project is open-source under the MIT License. See `LICENSE` for details.
 | Bishopfox       | bishopfox.com  | careers@bishopfox.com           | For Employment          | Global         | Bishop Fox offensive security services help you find and fix vulnerabilities before they become incidents.       | https://bishopfox.com/careers | 2025-11-18    |
 | Hunt Oil Company       | huntoil.com  | fraudalert@huntoil.com           | For everythings          | Global         | Enterprise engaged in traditional exploration, unconventional resource plays, complex pipeline and processing operations.       | https://demo.huntconsolidated.com/hoc/careers.aspx | 2025-11-19    |
 | KBR, Inc       | kbr-group.com  | careers@kbr-finance.com           | For Employment          | Global         | It's an American engineering firm offering expertise in the oil industry and industrial synthesis processes.       | https://www.kbr-group.com/career/ | 2025-11-20    |
+| Corning       | corning.com  | areers@corning.com           | For Employment          | Global         | It is an American company specializing in the manufacture of glass and ceramics.       | https://www.corning.com/emea/fr/careers/locations.html | 2025-11-21    |
 
 
 ## Star History of CareerLauncher 
