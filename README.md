@@ -21,9 +21,12 @@ We welcome contributions! Please ensure all added emails are **publicly listed**
 
 ## License
 
-This project is open-source under the MIT License. See `LICENSE` for details.
+## License  
+This database is released under the **Open Data Commons Attribution License (ODC-BY)**.  
+You are free to share, create, and adapt as long as you provide proper attribution.  
+See [LICENSE](LICENSE) for full details.
 
-> ⚠️ **Disclaimer:** All emails are collected from public sources. Use responsibly. Do not send bulk unsolicited emails. Respect privacy and applicable laws.
+⚠️ **Disclaimer**: All emails are collected from public sources. Use responsibly. Do not send bulk unsolicited emails. Respect privacy and applicable laws.
 
 
 
