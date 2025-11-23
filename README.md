@@ -73,6 +73,7 @@ See [LICENSE](LICENSE) for full details.
 | KBR, Inc       | kbr-group.com  | careers@kbr-finance.com           | For Employment          | Global         | It's an American engineering firm offering expertise in the oil industry and industrial synthesis processes.       | https://www.kbr-group.com/career/ | 2025-11-20    |
 | Corning       | corning.com  | areers@corning.com           | For Employment          | Global         | It is an American company specializing in the manufacture of glass and ceramics.       | https://www.corning.com/emea/fr/careers/locations.html | 2025-11-21    |
 | Western Governors University       | wgu.edu  | careers@wgu.edu           | For Employment          | Global         | An online university where you can earn an affordable, accredited, career-focused college degree at an accelerated pace.       | https://careers.wgu.edu/ | 2025-11-22    |
+| Rambus       | rambus.com  | talent@rambus.com           | For Employment          | Global         | Industry-leading Chips and Silicon IP Making Data Faster and Safer.       | https://www.rambus.com/careers/ | 2025-11-23    |
 
 
 ## Star History of CareerLauncher 
