@@ -75,6 +75,7 @@ See [LICENSE](LICENSE) for full details.
 | Western Governors University       | wgu.edu  | careers@wgu.edu           | For Employment          | Global         | An online university where you can earn an affordable, accredited, career-focused college degree at an accelerated pace.       | https://careers.wgu.edu/ | 2025-11-22    |
 | Rambus       | rambus.com  | talent@rambus.com           | For Employment          | Global         | Industry-leading Chips and Silicon IP Making Data Faster and Safer.       | https://www.rambus.com/careers/ | 2025-11-23    |
 | Palantir       | palantir.com  | careers@palantir.com           | For Employment          | Global         | It's a service and software publishing company specializing in data analysis and science.       | https://www.quora.com/How-do-I-contact-someone-who-works-at-Palantir-Technologies-I-was-contacted-by-a-recruiter-but-it-looks-like-a-scam | 2025-11-24    |
+| Nrgsystems       | nrgsystems.com  | hr@nrgsystems.com           | For Employment          | Global         | Users can reliably access wind and solar data, configure NRG equipment, and troubleshoot potential issues from anywhere.       | https://www.nrgsystems.com/about/careers | 2025-11-25    |
 
 
 ## Star History of CareerLauncher 
