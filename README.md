@@ -77,6 +77,7 @@ See [LICENSE](LICENSE) for full details.
 | Palantir       | palantir.com  | careers@palantir.com           | For Employment          | Global         | It's a service and software publishing company specializing in data analysis and science.       | https://www.quora.com/How-do-I-contact-someone-who-works-at-Palantir-Technologies-I-was-contacted-by-a-recruiter-but-it-looks-like-a-scam | 2025-11-24    |
 | Nrgsystems       | nrgsystems.com  | hr@nrgsystems.com           | For Employment          | Global         | Users can reliably access wind and solar data, configure NRG equipment, and troubleshoot potential issues from anywhere.       | https://www.nrgsystems.com/about/careers | 2025-11-25    |
 | Sony       | sonyjobs.com  | talenthelp@am.sony.com           | For Employment          | Global         | It is a Japanese multinational corporation and is active in fields such as electronics, telephony, and information technology.       | https://www.sonyjobs.com/find-a-job.html | 2025-11-26    |
+| KLA       | kla.com  | talent.acquisition@kla.com           | For Employment          | Global         | It is an American company specializing in the design and manufacture of semiconductor production equipment.       | https://www.kla.com/careers | 2025-11-27    |
 
 
 ## Star History of CareerLauncher 
