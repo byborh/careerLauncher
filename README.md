@@ -78,6 +78,7 @@ See [LICENSE](LICENSE) for full details.
 | Nrgsystems       | nrgsystems.com  | hr@nrgsystems.com           | For Employment          | Global         | Users can reliably access wind and solar data, configure NRG equipment, and troubleshoot potential issues from anywhere.       | https://www.nrgsystems.com/about/careers | 2025-11-25    |
 | Sony       | sonyjobs.com  | talenthelp@am.sony.com           | For Employment          | Global         | It is a Japanese multinational corporation and is active in fields such as electronics, telephony, and information technology.       | https://www.sonyjobs.com/find-a-job.html | 2025-11-26    |
 | KLA       | kla.com  | talent.acquisition@kla.com           | For Employment          | Global         | It is an American company specializing in the design and manufacture of semiconductor production equipment.       | https://www.kla.com/careers | 2025-11-27    |
+| KLA       | careercircle.com  | team@careercircle.com           | For Employment          | Global         | CareerCircle connects job-ready talent with employers and career pathways that empower success.       | https://www.facebook.com/MyCareerCircle/ | 2025-11-29    |
 
 
 ## Star History of CareerLauncher 
