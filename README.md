@@ -79,6 +79,7 @@ See [LICENSE](LICENSE) for full details.
 | KLA       | kla.com  | talent.acquisition@kla.com           | For Employment          | Global         | It is an American company specializing in the design and manufacture of semiconductor production equipment.       | https://www.kla.com/careers | 2025-11-27    |
 | KLA       | careercircle.com  | team@careercircle.com           | For Employment          | Global         | CareerCircle connects job-ready talent with employers and career pathways that empower success.       | https://www.facebook.com/MyCareerCircle/ | 2025-11-29    |
 | Metron       | metrongroup.co.uk  | careers@metrongroup.co.uk            | For Employment          | UK         | Independent Engineering Service Company.       | https://www.metrongroup.co.uk/about/people-careers/ | 2025-11-30    |
+| Trillium       | trilliumsupport.com  | careers@metrongroup.co.uk            | For Employment          | Global         | It provide mission critical valves, pumps, and aftermarket services in oil and gas...       | hhttps://www.trilliumsupport.com/careers | 2025-12-05    |
 
 
 ## Star History of CareerLauncher 
