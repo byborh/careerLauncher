@@ -83,6 +83,7 @@ See [LICENSE](LICENSE) for full details.
 | Launch Potato       | launchpotato.com  | info@launchpotato.com            | For general inquiries          | US         | South Florida's fastest growing digital media company.       | https://launchpotato.com/contact/careers | 2025-12-05    |
 | MyTime       | mytime.com  | jobs@mytime.com            | For Employment          | US         | Cloud-based appointment scheduling and point-of-sale system.       | https://mytime.pissedconsumer.com/customer-service.html | 2025-12-16    |
 | Inter Media Group       | intermediagroup.org  | careers@intermediagroup.org            | For Employment          | US         | It delivers customized solutions that keep your operations running seamlessly.       | https://www.intermediagroup.org/career-opportunities/ | 2025-12-17    |
+| Sierra Workforce Solutions       | sierraws.com  | jobs@sierraws.com            | For Employment          | US         | It specializes in the time and attendance software, time clock systems and workforce management solution industry.       | https://sierraws.com/about-us/careers/ | 2025-12-18    |
 
 
 ## Star History of CareerLauncher 
