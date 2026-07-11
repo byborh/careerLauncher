@@ -1,0 +1,71 @@
+name: "➕ Suggest a company"
+description: Suggest a company with a public, verifiable career email to add to the list.
+title: "add: [COMPANY NAME]"
+labels: ["new company"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for contributing! Please make sure the email is **published on a public official page** and include the **source URL**. Guessed or personal emails will not be accepted. See [CONTRIBUTING.md](../blob/main/CONTRIBUTING.md).
+  - type: input
+    id: company
+    attributes:
+      label: Company name
+      placeholder: Nextcloud
+    validations:
+      required: true
+  - type: input
+    id: domain
+    attributes:
+      label: Domain
+      placeholder: nextcloud.com
+    validations:
+      required: true
+  - type: input
+    id: email
+    attributes:
+      label: Public role email
+      description: A team inbox (careers@, jobs@, hr@…), never a personal address.
+      placeholder: jobs@nextcloud.com
+    validations:
+      required: true
+  - type: input
+    id: department
+    attributes:
+      label: Department / Team
+      placeholder: For Employment
+    validations:
+      required: true
+  - type: input
+    id: location
+    attributes:
+      label: Location
+      placeholder: Stuttgart, Germany (or Global)
+    validations:
+      required: true
+  - type: input
+    id: description
+    attributes:
+      label: One-sentence description
+      placeholder: Open-source cloud collaboration software company.
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: Source URL
+      description: The exact public page where this email appears.
+      placeholder: https://nextcloud.com/jobs/
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Verification
+      options:
+        - label: The email is visible on the source URL right now.
+          required: true
+        - label: It is a role/team inbox, not a personal address.
+          required: true
+        - label: This company is not already in the list.
+          required: true

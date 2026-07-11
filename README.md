@@ -21,7 +21,6 @@ We welcome contributions! Please ensure all added emails are **publicly listed**
 
 ## License
 
-## License  
 This database is released under the **Open Data Commons Attribution License (ODC-BY)**.  
 You are free to share, create, and adapt as long as you provide proper attribution.  
 See [LICENSE](LICENSE) for full details.

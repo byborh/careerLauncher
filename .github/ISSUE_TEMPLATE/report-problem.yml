@@ -1,0 +1,31 @@
+name: "🐛 Report a problem"
+description: Report a bounced email, dead link, or incorrect data in an existing entry.
+title: "fix: [COMPANY NAME]"
+labels: ["data fix"]
+body:
+  - type: input
+    id: company
+    attributes:
+      label: Which company / row?
+      placeholder: Corning
+    validations:
+      required: true
+  - type: dropdown
+    id: problem
+    attributes:
+      label: What's wrong?
+      options:
+        - Email bounces / is invalid
+        - Source URL is dead
+        - Wrong email (belongs to another company)
+        - Typo in company name / domain
+        - Other (explain below)
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: Details
+      description: What did you observe, and what should it be? Include a source URL if you have a correction.
+    validations:
+      required: true
