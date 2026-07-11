@@ -105,8 +105,3 @@ See [LICENSE](LICENSE) for full details.
 | GDIT       | gdit.com  | accommodations@gdit.com            | For accommodation requests          | Falls Church, VA         | IT and defense technology services subsidiary of General Dynamics.       | https://www.gdit.com/careers/accessibility-and-accommodations/ | 2026-07-11    |
 | Deloitte       | deloitte.com  | USTalentCICInbox@deloitte.com            | For accommodation requests          | United States         | Professional services and technology consulting firm.       | https://www.deloitte.com/us/en/careers/join-deloitte/notices/assistance-for-applicants-requiring-accomodations.html | 2026-07-11    |
 | Warner Bros. Discovery       | wbd.com  | recruitadmin@wbd.com            | For accommodation requests          | New York, US         | Media and entertainment technology company (streaming, studios).       | https://careers.wbd.com/global/en/accessibility | 2026-07-11    |
-
-
-## Star History of CareerLauncher 
-
-[![Star History Chart](https://api.star-history.com/svg?repos=byborh/careerLauncher&type=date&legend=top-left)](https://www.star-history.com/#byborh/careerLauncher&type=date&legend=top-left)
