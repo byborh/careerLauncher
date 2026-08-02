@@ -15,6 +15,14 @@
 2. Choose a template from the `templates` folder and personalize it.
 3. Send your email carefully and ethically — avoid spam, respect privacy, and always verify contacts before reaching out.
 
+### Or use the tracker app
+
+[`app/`](app/) is a small, dependency-free web app built on this dataset: pick a
+company, merge a template with your profile into a ready-to-send email (it makes
+you write the "why this company" line yourself), then log it and get told who
+still owes you a reply. No backend, no account — your data is a JSON file you
+own. See [app/README.md](app/README.md).
+
 ## Contributing
 
 We welcome contributions! Please ensure all added emails are **publicly listed** on official websites (careers pages, press contacts, etc.) and include a source URL. See `CONTRIBUTING.md` for details.

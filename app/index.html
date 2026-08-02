@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CareerLauncher Tracker</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='26'>🚀</text></svg>">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">CareerLauncher <span>Tracker</span></div>
+  <nav class="tabs" id="tabs">
+    <button class="tab is-active" data-screen="compose">Compose</button>
+    <button class="tab" data-screen="tracker">Tracker <span class="pill" id="tabCount">0</span></button>
+    <button class="tab" data-screen="profile">Profile &amp; Templates</button>
+  </nav>
+</header>
+
+<div class="storagebar" id="storageBar">
+  <span class="storage-text" id="storageText">Loading…</span>
+  <span class="storage-actions">
+    <button class="btn btn-sm" id="btnCreateFile">Create data file</button>
+    <button class="btn btn-sm" id="btnOpenFile">Open data file</button>
+    <button class="btn btn-sm" id="btnReconnect" hidden>Reconnect file</button>
+    <button class="btn btn-sm" id="btnExportJSON">Export JSON</button>
+    <button class="btn btn-sm" id="btnImportJSON">Import JSON</button>
+    <input type="file" id="importInput" accept="application/json,.json" hidden>
+  </span>
+</div>
+
+<main>
+
+<!-- ============================================================ A. COMPOSE -->
+<section class="screen is-active" id="screen-compose">
+  <div class="grid">
+
+    <div class="card">
+      <h2>1 · Company</h2>
+
+      <label for="companySearch">Search the CareerLauncher list</label>
+      <input type="search" id="companySearch" placeholder="Type a company, location or keyword…" autocomplete="off">
+      <div class="listbox" id="companyList" role="listbox" aria-label="Companies"></div>
+
+      <div class="row-between muted small">
+        <span id="datasetInfo">—</span>
+        <button class="btn btn-sm" id="btnUpdateData">Update data</button>
+      </div>
+
+      <div class="selected" id="selectedCompany" hidden>
+        <div class="row-between">
+          <strong id="selCompanyName"></strong>
+          <button class="btn btn-sm btn-ghost" id="btnClearCompany">Clear</button>
+        </div>
+        <div class="mono" id="selCompanyEmail"></div>
+        <p class="muted small" id="selCompanyDesc"></p>
+        <p class="warn" id="selCompanyWarn" hidden></p>
+      </div>
+
+      <details class="manual">
+        <summary>Company not in the list? Add it manually</summary>
+        <label for="manualCompany">Company name</label>
+        <input type="text" id="manualCompany" placeholder="Acme Robotics">
+        <label for="manualEmail">Email</label>
+        <input type="email" id="manualEmail" placeholder="jobs@acme.example">
+        <button class="btn btn-sm" id="btnUseManual">Use this company</button>
+      </details>
+    </div>
+
+    <div class="card">
+      <h2>2 · Template &amp; details</h2>
+
+      <label for="templatePick">Template</label>
+      <select id="templatePick"></select>
+
+      <label for="roleInput">Role you are applying for</label>
+      <input type="text" id="roleInput" placeholder="Software Engineer intern">
+
+      <label for="whyInput">
+        Why this company <span class="req">— you must write this yourself</span>
+      </label>
+      <textarea id="whyInput" rows="3"></textarea>
+      <div class="row-between">
+        <button class="btn btn-sm btn-ghost" id="btnSeedWhy">Seed a draft from the description</button>
+        <span class="small" id="whyState"></span>
+      </div>
+      <p class="hint">
+        This one line decides whether your email is read or deleted. Be specific:
+        a product, a paper, a release, a value you can point at.
+      </p>
+    </div>
+
+    <div class="card card-wide">
+      <div class="row-between">
+        <h2>3 · Your email</h2>
+        <div class="btn-group">
+          <button class="btn" id="btnCopyAll">Copy email</button>
+          <button class="btn btn-ghost" id="btnCopyBody">Copy body only</button>
+          <button class="btn btn-primary" id="btnLog">Log this application</button>
+        </div>
+      </div>
+
+      <p class="blocker" id="copyBlocker" hidden></p>
+
+      <label class="small" for="previewSubject">Subject</label>
+      <input type="text" id="previewSubject" readonly class="mono">
+
+      <label class="small" for="previewBody">Body</label>
+      <textarea id="previewBody" rows="20" readonly class="mono"></textarea>
+
+      <p class="reminder" id="cvReminder"></p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================ B. TRACKER -->
+<section class="screen" id="screen-tracker">
+
+  <div class="dash" id="dash"></div>
+
+  <div class="row-between toolbar">
+    <div class="btn-group" id="viewFilters">
+      <button class="btn btn-sm is-active" data-view="all">All</button>
+      <button class="btn btn-sm" data-view="followup">Needs follow-up <span class="pill" id="cntFollow">0</span></button>
+      <button class="btn btn-sm" data-view="action">Needs your action <span class="pill" id="cntAction">0</span></button>
+    </div>
+    <div class="btn-group">
+      <button class="btn btn-sm" id="btnAddRow">+ Add row</button>
+      <button class="btn btn-sm" id="btnExportCSV">Export CSV</button>
+    </div>
+  </div>
+
+  <div class="tablewrap">
+    <table class="tracker" id="trackerTable">
+      <thead>
+        <tr>
+          <th>Company</th><th>Email</th><th>Role</th><th>Template</th>
+          <th>Date sent</th><th>Status</th><th>Response date</th>
+          <th>Follow-up on</th><th>Notes</th><th></th>
+        </tr>
+      </thead>
+      <tbody id="trackerBody"></tbody>
+    </table>
+    <p class="empty" id="trackerEmpty" hidden>No applications yet. Compose one and hit “Log this application”.</p>
+  </div>
+</section>
+
+<!-- ==================================================== C. PROFILE + TPLS -->
+<section class="screen" id="screen-profile">
+  <div class="grid">
+
+    <div class="card">
+      <h2>Your profile</h2>
+      <p class="muted small">Saved once, merged into every email.</p>
+
+      <label for="pName">Name</label>
+      <input type="text" id="pName" data-profile="name" placeholder="Ada Lovelace">
+
+      <label for="pRole">Your role / status</label>
+      <input type="text" id="pRole" data-profile="role" placeholder="final-year Computer Science student">
+
+      <label for="pSkills">Key skills / achievements (one per line)</label>
+      <textarea id="pSkills" data-profile="skills" rows="4" placeholder="Python, React, SQL&#10;Built X, used by Y people"></textarea>
+
+      <label for="pPortfolio">Portfolio URL</label>
+      <input type="url" id="pPortfolio" data-profile="portfolio" placeholder="https://…">
+
+      <label for="pLinkedin">LinkedIn</label>
+      <input type="url" id="pLinkedin" data-profile="linkedin" placeholder="https://linkedin.com/in/…">
+
+      <label for="pGithub">GitHub</label>
+      <input type="url" id="pGithub" data-profile="github" placeholder="https://github.com/…">
+
+      <label for="pPhone">Phone</label>
+      <input type="tel" id="pPhone" data-profile="phone">
+
+      <label for="pEmail">Your email</label>
+      <input type="email" id="pEmail" data-profile="email">
+
+      <label for="pCv">CV file name (for the attach reminder)</label>
+      <input type="text" id="pCv" data-profile="cvFileName" placeholder="ada-lovelace-cv.pdf">
+    </div>
+
+    <div class="card">
+      <div class="row-between">
+        <h2>Templates</h2>
+        <div class="btn-group">
+          <button class="btn btn-sm" id="btnNewTemplate">+ New</button>
+          <button class="btn btn-sm btn-ghost" id="btnResetTemplates">Restore defaults</button>
+        </div>
+      </div>
+
+      <label for="tplPick">Template</label>
+      <select id="tplPick"></select>
+
+      <label for="tplId">id</label>
+      <input type="text" id="tplId" class="mono">
+
+      <label for="tplName">Name</label>
+      <input type="text" id="tplName">
+
+      <label for="tplSubject">Subject</label>
+      <input type="text" id="tplSubject" class="mono">
+
+      <label for="tplBody">Body</label>
+      <textarea id="tplBody" rows="16" class="mono"></textarea>
+
+      <div class="row-between">
+        <span class="small muted">Tokens:
+          <code>{{company}}</code> <code>{{email}}</code> <code>{{role}}</code>
+          <code>{{description}}</code> <code>{{why}}</code> <code>{{name}}</code>
+          <code>{{skills}}</code> <code>{{portfolio}}</code> <code>{{linkedin}}</code>
+          <code>{{github}}</code> <code>{{phone}}</code> <code>{{userEmail}}</code>
+          <code>{{cvFileName}}</code>
+        </span>
+        <button class="btn btn-sm btn-danger" id="btnDeleteTemplate">Delete template</button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+</main>
+
+<div class="toast" id="toast" hidden></div>
+
+<script src="templates.js"></script>
+<script src="seed-companies.js"></script>
+<script src="data.js"></script>
+<script src="storage.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
