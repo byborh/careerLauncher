@@ -1,4 +1,4 @@
-# [Career Launcher](https://career-launcher.netlify.app/) 🚀
+# [Career Launcher](https://careerlauncher.rakhymberdi.com/) 🚀
 
 **Career Launcher** is a curated collection of public emails from top tech companies, designed to help students and early-career professionals send personalized internship or spontaneous job applications efficiently.
 
@@ -23,7 +23,7 @@ you write the "why this company" line yourself), then log it and get told who
 still owes you a reply. No backend, no account — your data is a JSON file you
 own. See [app/README.md](app/README.md).
 
-Here is the link: https://career-launcher.netlify.app/
+Here is the link: https://careerlauncher.rakhymberdi.com/
 
 ## Contributing
 
