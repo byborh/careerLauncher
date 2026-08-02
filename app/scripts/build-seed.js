@@ -1,12 +1,12 @@
 #!/usr/bin/env node
-/* build-seed.js — regenerate app/seed-companies.js from the repo README.
+/* build-seed.js - regenerate app/seed-companies.js from the repo README.
  *
  *   node app/scripts/build-seed.js
  *
  * The app fetches the live README at runtime ("Update data"), but it also ships
  * a bundled snapshot so it works on first run and offline. Re-run this whenever
  * the README table changes (or just let users click "Update data").
- * Uses the same parser the browser uses — app/data.js.
+ * Uses the same parser the browser uses - app/data.js.
  */
 'use strict';
 
@@ -20,7 +20,7 @@ var outPath = path.join(appDir, 'seed-companies.js');
 
 var rows = CLData.parseMarkdownTable(fs.readFileSync(readmePath, 'utf8'));
 if (!rows.length) {
-  console.error('No rows parsed from ' + readmePath + ' — refusing to write an empty seed.');
+  console.error('No rows parsed from ' + readmePath + ' - refusing to write an empty seed.');
   process.exit(1);
 }
 
@@ -34,7 +34,7 @@ var slim = rows.map(function (r) {
 });
 
 var banner = [
-  '/* seed-companies.js — GENERATED, do not edit by hand.',
+  '/* seed-companies.js - GENERATED, do not edit by hand.',
   ' * Snapshot of the README company table so the app works offline / on first run.',
   ' * Regenerate: node app/scripts/build-seed.js',
   ' * Rows: ' + slim.length,

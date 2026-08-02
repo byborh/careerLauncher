@@ -1,4 +1,4 @@
-/* app.js — state, merge engine, three screens, tracker.
+/* app.js - state, merge engine, three screens, tracker.
  * No build step, no framework, no CDN. Plain DOM.
  */
 (function () {
@@ -175,12 +175,12 @@
   function copyBlockReason() {
     var why = $('whyInput').value.trim();
     if (!selected) return 'Pick a company first.';
-    if (!why) return 'Write the “why this company” line — a generic mail-merge email gets deleted.';
+    if (!why) return 'Write the “why this company” line - a generic mail-merge email gets deleted.';
     if (whySeed && why === whySeed.trim()) {
       return 'That “why this company” line is the auto-generated draft. Rewrite it in your own words.';
     }
     if (/⟨|REWRITE/i.test(why)) return 'The “why this company” line still contains the placeholder text.';
-    if (why.length < 25) return 'The “why this company” line is too short to be convincing — be specific.';
+    if (why.length < 25) return 'The “why this company” line is too short to be convincing - be specific.';
     return '';
   }
 
@@ -204,7 +204,7 @@
 
     var cv = state.profile.cvFileName;
     $('cvReminder').textContent = cv
-      ? '📎 Don\'t forget to attach your CV (' + cv + ') in your mail client — this page cannot do it for you.'
+      ? '📎 Don\'t forget to attach your CV (' + cv + ') in your mail client - this page cannot do it for you.'
       : '📎 Don\'t forget to attach your CV in your mail client. (Add its file name in Profile to see it here.)';
   }
 
@@ -256,7 +256,7 @@
     });
 
     if (rows.length > 200) {
-      box.appendChild(el('p', { class: 'empty small', text: 'Showing 200 of ' + rows.length + ' — keep typing to narrow it down.' }));
+      box.appendChild(el('p', { class: 'empty small', text: 'Showing 200 of ' + rows.length + ' - keep typing to narrow it down.' }));
     }
   }
 
@@ -292,7 +292,7 @@
       companiesFetchedAt = new Date().toISOString();
       window.CLStorage.cacheCompanies(rows);
       setCompanies(rows);
-      toast('Updated — ' + rows.length + ' rows from GitHub.');
+      toast('Updated - ' + rows.length + ' rows from GitHub.');
     }).catch(function (err) {
       toast('Update failed (' + (err.message || err) + '). Using the cached list.');
     }).then(function () {
@@ -325,15 +325,15 @@
     if (!selected || !selected.description) return;
     var d = selected.description.replace(/\s*\.\s*$/, '');
     d = d.charAt(0).toLowerCase() + d.slice(1);
-    whySeed = 'your work — ' + d + ' — caught my attention.';
+    whySeed = 'your work - ' + d + ' - caught my attention.';
     $('whyInput').value = whySeed;
     renderPreview();
-    toast('Draft seeded. Now rewrite it in your own words — it will not copy as-is.');
+    toast('Draft seeded. Now rewrite it in your own words - it will not copy as-is.');
   }
 
   function copyText(text, label) {
     var done = function () { toast(label + ' copied.'); };
-    var fail = function () { toast('Copy failed — select the text and copy manually.'); };
+    var fail = function () { toast('Copy failed - select the text and copy manually.'); };
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text).then(done).catch(fail);
     } else {
@@ -361,7 +361,7 @@
     });
     persist();
     renderTracker();
-    toast('Logged — follow up on ' + addDaysISO(sent, FOLLOWUP_DAYS) + '.');
+    toast('Logged - follow up on ' + addDaysISO(sent, FOLLOWUP_DAYS) + '.');
   }
 
   function useManualCompany() {
@@ -448,7 +448,7 @@
       'data-key': a.id + ':templateId',
       onchange: function (e) { updateApp(a.id, 'templateId', e.target.value); }
     });
-    sel.appendChild(el('option', { value: '', text: '—' }));
+    sel.appendChild(el('option', { value: '', text: '-' }));
     state.templates.forEach(function (t) {
       var opt = el('option', { value: t.id, text: t.name });
       if (t.id === a.templateId) opt.selected = true;
@@ -601,7 +601,7 @@
     state.templates.push({
       id: id,
       name: 'New template',
-      subject: 'Application — {{role}}',
+      subject: 'Application - {{role}}',
       body: 'Hello {{company}} team,\n\nI\'m {{name}}. {{why}}\n\n{{skills}}\n\nBest regards,\n{{name}}\n{{phone}} · {{userEmail}}'
     });
     persist();
@@ -655,8 +655,8 @@
     } else {
       bar.classList.add('is-unsaved');
       text.textContent = supported
-        ? '⚠ Not saved to a file — your data lives in this browser only. Create a data file, or export to back up.'
-        : '⚠ This browser has no File System Access API — your data lives in this browser only. Export regularly to back up.';
+        ? '⚠ Not saved to a file - your data lives in this browser only. Create a data file, or export to back up.'
+        : '⚠ This browser has no File System Access API - your data lives in this browser only. Export regularly to back up.';
     }
 
     $('btnReconnect').hidden = !st.needsPermission;
@@ -763,7 +763,7 @@
     $('btnCreateFile').addEventListener('click', function () {
       window.CLStorage.createFile(state).then(function (loaded) {
         if (loaded) { adoptState(loaded); toast('Opened your existing data file.'); }
-        else toast('Data file created — every change is saved to it now.');
+        else toast('Data file created - every change is saved to it now.');
       }).catch(function (err) {
         if (err && err.name === 'AbortError') return;
         toast('Could not create the file: ' + (err.message || err));
@@ -772,7 +772,7 @@
     $('btnOpenFile').addEventListener('click', function () {
       window.CLStorage.openFile().then(function (loaded) {
         if (loaded) { adoptState(loaded); toast('Data file loaded.'); }
-        else { persist(); toast('That file was empty — it now holds your current data.'); }
+        else { persist(); toast('That file was empty - it now holds your current data.'); }
       }).catch(function (err) {
         if (err && err.name === 'AbortError') return;
         toast('Could not open the file: ' + (err.message || err));

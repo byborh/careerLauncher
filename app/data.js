@@ -1,4 +1,4 @@
-/* data.js — CareerLauncher dataset
+/* data.js - CareerLauncher dataset
  * Fetches the repo README, parses its Markdown table into company records,
  * and flags rows that are not appropriate application targets (§8 of PROMPT.md).
  *
@@ -83,7 +83,7 @@
 
   /**
    * Classify a row: 'apply' (fine), 'warn' (generic inbox), 'blocked'
-   * (accommodation / fraud / EEO inbox — never offer it as a target).
+   * (accommodation / fraud / EEO inbox - never offer it as a target).
    */
   function classify(row) {
     var declared = String(row.applicability || '').toLowerCase().trim();
@@ -103,7 +103,7 @@
     if (GENERIC_LOCALPART.test(lp)) {
       return {
         level: 'warn',
-        reason: 'Generic company inbox — it may not reach a recruiter. Use with care.'
+        reason: 'Generic company inbox - it may not reach a recruiter. Use with care.'
       };
     }
     return { level: 'apply', reason: '' };
