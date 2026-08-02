@@ -76,7 +76,7 @@ write it for you. "Seed a draft from the description" gives you a starting point
 | File | What it does |
 |------|--------------|
 | `index.html` | the three screens |
-| `styles.css` | styling (light + dark) |
+| `styles.css` | styling (light, on purpose — it's a lot of text to read) |
 | `app.js` | state, merge engine, tracker, wiring |
 | `storage.js` | File System Access API, IndexedDB handle, export/import, CSV |
 | `data.js` | README fetch + Markdown table parser + applicability filter |

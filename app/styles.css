@@ -1,35 +1,22 @@
 /* styles.css — small, readable, no framework. */
 
+/* Light on purpose: this app is read as text all day, and a dark UI made the
+   long email preview hard to read. It stays light whatever the OS is set to. */
 :root {
-  --bg: #f6f7f9;
+  --bg: #f4f6f9;
   --panel: #ffffff;
-  --ink: #16191d;
-  --muted: #6b7280;
-  --line: #dfe3e8;
+  --field: #fbfcfd;
+  --ink: #14171b;
+  --muted: #5b6472;
+  --line: #dde2e9;
   --accent: #1d4ed8;
   --accent-ink: #ffffff;
-  --warn-bg: #fff7e6;
-  --warn-ink: #92400e;
-  --danger: #b91c1c;
-  --ok: #15803d;
+  --warn-bg: #fff6e0;
+  --warn-ink: #8a5a06;
+  --danger: #b42318;
+  --ok: #157347;
   --radius: 8px;
-  color-scheme: light dark; /* native date pickers follow the theme */
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #14161a;
-    --panel: #1c1f24;
-    --ink: #e8eaed;
-    --muted: #9aa3af;
-    --line: #2c3138;
-    --accent: #60a5fa;
-    --accent-ink: #0b1220;
-    --warn-bg: #3a2c10;
-    --warn-ink: #fbbf24;
-    --danger: #f87171;
-    --ok: #4ade80;
-  }
+  color-scheme: light; /* keep native date pickers and scrollbars light too */
 }
 
 * { box-sizing: border-box; }
@@ -101,13 +88,15 @@ input, select, textarea {
   padding: 8px 10px;
   border: 1px solid var(--line);
   border-radius: 6px;
-  background: var(--bg);
+  background: var(--field);
   color: var(--ink);
   font: inherit;
 }
 input:focus, select:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
 textarea { resize: vertical; }
-input[readonly], textarea[readonly] { background: var(--bg); color: var(--ink); }
+/* The email preview is the most-read text on the page — keep it paper-white. */
+input[readonly], textarea[readonly] { background: var(--panel); color: var(--ink); }
+#previewBody { line-height: 1.6; }
 
 .mono { font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace; font-size: 13px; }
 
@@ -142,7 +131,7 @@ input[readonly], textarea[readonly] { background: var(--bg); color: var(--ink); 
   margin-top: 8px;
   max-height: 260px; overflow-y: auto;
   border: 1px solid var(--line); border-radius: 6px;
-  background: var(--bg);
+  background: var(--panel);
 }
 .company {
   display: block; width: 100%; text-align: left;
@@ -151,7 +140,7 @@ input[readonly], textarea[readonly] { background: var(--bg); color: var(--ink); 
   padding: 8px 10px; font: inherit; cursor: pointer;
 }
 .company:last-child { border-bottom: 0; }
-.company:hover { background: var(--panel); }
+.company:hover { background: var(--bg); }
 .company.is-selected { background: var(--accent); color: var(--accent-ink); }
 .company .meta { display: block; font-size: 12px; opacity: .75; }
 .company .flag { font-size: 11px; color: var(--warn-ink); background: var(--warn-bg); border-radius: 4px; padding: 0 5px; margin-left: 6px; }
@@ -159,7 +148,7 @@ input[readonly], textarea[readonly] { background: var(--bg); color: var(--ink); 
 
 .selected {
   margin-top: 12px; padding: 10px;
-  border: 1px solid var(--line); border-radius: 6px; background: var(--bg);
+  border: 1px solid var(--line); border-radius: 6px; background: var(--field);
 }
 .selected p { margin: 6px 0 0; }
 .warn { color: var(--warn-ink); background: var(--warn-bg); padding: 6px 8px; border-radius: 6px; font-size: 13px; }
