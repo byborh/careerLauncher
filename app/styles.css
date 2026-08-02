@@ -52,6 +52,18 @@ h2 { font-size: 15px; margin: 0 0 12px; text-transform: uppercase; letter-spacin
 .tab:hover { background: var(--bg); color: var(--ink); }
 .tab.is-active { background: var(--accent); color: var(--accent-ink); }
 
+/* Credit where it's due: the dataset this whole app stands on. */
+.repo-link {
+  margin-left: auto;
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 6px 11px;
+  border: 1px solid var(--line); border-radius: 999px;
+  color: var(--muted); text-decoration: none; font-size: 13px;
+}
+.repo-link:hover { color: var(--ink); border-color: var(--accent); background: var(--bg); }
+.repo-link svg { flex: none; }
+@media (max-width: 620px) { .repo-link span { display: none; } }
+
 .storagebar {
   display: flex; align-items: center; justify-content: space-between; gap: 12px;
   padding: 8px 20px;

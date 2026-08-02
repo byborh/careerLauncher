@@ -1,6 +1,8 @@
 # CareerLauncher Tracker
 
 A tiny, dependency-free web app that turns the [CareerLauncher dataset](../README.md)
+— the open-source project this is built on,
+[github.com/byborh/careerLauncher](https://github.com/byborh/careerLauncher) —
 into an organized job search:
 
 1. **Compose** — pick a company from the list, pick a template, and get a
