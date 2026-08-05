@@ -99,9 +99,9 @@ if (startAt === -1 || endAt === -1 || endAt < startAt) {
     '',
     previewTable(preview),
     '',
-    '**' + preview.length + ' of ' + applicable.length + ' companies shown.** The full list — with domains, ' +
-    'team labels, source URLs and verification dates — is in ' +
-    '[`data/companies.md`](data/companies.md).',
+    '**' + preview.length + ' of ' + rows.length + ' companies shown** — the whole list, with domains, ' +
+    'team labels, source URLs and verification dates, is in ' +
+    '**[`data/companies.md`](data/companies.md)**.',
     '',
     END
   ].join('\n');
