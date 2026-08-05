@@ -1,6 +1,7 @@
 /* data.js - CareerLauncher dataset
- * Fetches the repo README, parses its Markdown table into company records,
- * and flags rows that are not appropriate application targets (§8 of PROMPT.md).
+ * Fetches the dataset file (data/companies.md), parses its Markdown table into
+ * company records, and flags rows that are not appropriate application targets
+ * (§8 of PROMPT.md).
  *
  * Runs in the browser (attaches window.CLData) and in Node (module.exports),
  * so scripts/build-seed.js can reuse the exact same parser.
@@ -11,9 +12,15 @@
   var REPO_OWNER = 'byborh';
   var REPO_NAME = 'careerLauncher';
   var REPO_BRANCH = 'main';
-  var RAW_README_URL =
+  var DEFAULT_DATASET_URL =
     'https://raw.githubusercontent.com/' +
-    REPO_OWNER + '/' + REPO_NAME + '/' + REPO_BRANCH + '/README.md';
+    REPO_OWNER + '/' + REPO_NAME + '/' + REPO_BRANCH + '/data/companies.md';
+
+  /* Forks point "Update data" at their own dataset via config.js. */
+  function datasetURL() {
+    var cfg = root.CL_CONFIG;
+    return (cfg && cfg.datasetUrl) || DEFAULT_DATASET_URL;
+  }
 
   // Local-part patterns that are never a place to apply for a job.
   var BLOCKED_LOCALPART = /accessib|accommodat|fraud|eeo|disability/i;
@@ -119,20 +126,22 @@
   /* ---------------------------------------------------------------- fetching */
 
   function fetchCompanies() {
-    return fetch(RAW_README_URL, { cache: 'no-store' })
+    var url = datasetURL();
+    return fetch(url, { cache: 'no-store' })
       .then(function (res) {
-        if (!res.ok) throw new Error('GitHub returned HTTP ' + res.status);
+        if (!res.ok) throw new Error('the dataset host returned HTTP ' + res.status);
         return res.text();
       })
       .then(function (md) {
         var rows = parseMarkdownTable(md);
-        if (!rows.length) throw new Error('No table rows found in README.md');
+        if (!rows.length) throw new Error('no table rows found at ' + url);
         return rows;
       });
   }
 
   var api = {
-    RAW_README_URL: RAW_README_URL,
+    DEFAULT_DATASET_URL: DEFAULT_DATASET_URL,
+    datasetURL: datasetURL,
     parseMarkdownTable: parseMarkdownTable,
     classify: classify,
     decorate: decorate,

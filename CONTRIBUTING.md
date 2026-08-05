@@ -1,4 +1,4 @@
-# Contributing to Career Launcher
+﻿# Contributing to Career Launcher
 
 Thanks for helping grow this community resource! 🚀
 
@@ -18,7 +18,7 @@ Career Launcher is an **open dataset of publicly listed company career emails**.
 
 ## Data format
 
-Each company is **one row** in the table in [`README.md`](README.md), with exactly these 8 columns:
+Each company is **one row** in the table in [`data/companies.md`](data/companies.md), with exactly these 8 columns:
 
 | Column | Meaning | Example |
 |--------|---------|---------|
@@ -46,10 +46,15 @@ Open an issue using the **"Suggest a company"** template. Fill in the fields and
 
 ### Option B — Open a pull request
 1. Fork the repo and create a branch (e.g. `add-nextcloud`).
-2. Add your row to the table in `README.md`, keeping the columns aligned.
-3. **Verify before submitting:** open the Source URL and confirm the email is visible on that page today.
-4. Commit with a clear message: `add Nextcloud`.
-5. Open a PR and fill in the checklist in the PR template.
+2. Add your row to the table in [`data/companies.md`](data/companies.md), keeping the columns aligned.
+3. Regenerate everything derived from the dataset, and commit it alongside your row:
+   ```bash
+   pnpm run seed        # rewrites app/seed-companies.js AND the README preview table
+   ```
+   CI fails the pull request if you forget — both must match the dataset.
+4. **Verify before submitting:** open the Source URL and confirm the email is visible on that page today.
+5. Commit with a clear message: `add Nextcloud`.
+6. Open a PR and fill in the checklist in the PR template.
 
 ---
 
@@ -60,6 +65,7 @@ Open an issue using the **"Suggest a company"** template. Fill in the fields and
 - [ ] The domain and company name are spelled correctly.
 - [ ] `Last Verified` is today's date in `YYYY-MM-DD` format.
 - [ ] The company isn't already in the list.
+- [ ] `pnpm run seed` was run, and both `app/seed-companies.js` and `README.md` are in the commit.
 
 ---
 

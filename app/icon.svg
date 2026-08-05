@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="CareerLauncher">
+  <rect width="512" height="512" rx="96" fill="#1d4ed8"/>
+  <g fill="none" stroke="#ffffff" stroke-width="26" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M256 96c56 44 84 100 84 168 0 30-6 56-16 78h-136c-10-22-16-48-16-78 0-68 28-124 84-168Z"/>
+    <path d="M188 262l-44 34 10 62 46-26"/>
+    <path d="M324 262l44 34-10 62-46-26"/>
+    <path d="M222 342h68l-14 62h-40l-14-62Z"/>
+  </g>
+  <circle cx="256" cy="212" r="30" fill="#ffffff"/>
+</svg>

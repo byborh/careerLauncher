@@ -94,21 +94,37 @@
 
     if (Array.isArray(raw.applications)) {
       base.applications = raw.applications.map(function (a) {
+        var sent = a.dateSent || todayISO();
         return {
           id: a.id || uid(),
           company: String(a.company || ''),
           email: String(a.email || ''),
           role: String(a.role || ''),
           templateId: String(a.templateId || ''),
-          dateSent: a.dateSent || todayISO(),
+          dateSent: sent,
           status: STATUSES.some(function (s) { return s.value === a.status; }) ? a.status : 'pending',
           responseDate: a.responseDate || null,
           notes: String(a.notes || ''),
-          followUpOn: a.followUpOn || addDaysISO(a.dateSent || todayISO(), FOLLOWUP_DAYS)
+          followUpOn: a.followUpOn || addDaysISO(sent, FOLLOWUP_DAYS),
+          // Firestore stores applications as an unordered collection, so the
+          // row order has to be a value, not an array position. Rows written
+          // before this existed get a deterministic one derived from dateSent.
+          createdAt: String(a.createdAt || sent + 'T00:00:00.000Z')
         };
       });
+      sortApplications(base.applications);
     }
     return base;
+  }
+
+  /** Newest first - the same order the array used to get from unshift(). */
+  function sortApplications(list) {
+    list.sort(function (a, b) {
+      var ka = (a.createdAt || a.dateSent || '') + '|' + a.id;
+      var kb = (b.createdAt || b.dateSent || '') + '|' + b.id;
+      return ka < kb ? 1 : (ka > kb ? -1 : 0);
+    });
+    return list;
   }
 
   var state = defaultState();
@@ -119,7 +135,7 @@
   var currentView = 'all';
   var editingTemplateId = null;
 
-  function persist() { window.CLStorage.save(state); }
+  function persist() { window.CLStore.save(state); }
 
   /* ------------------------------------------------------------ merge engine */
 
@@ -357,8 +373,10 @@
       status: 'pending',
       responseDate: null,
       notes: '',
-      followUpOn: addDaysISO(sent, FOLLOWUP_DAYS)
+      followUpOn: addDaysISO(sent, FOLLOWUP_DAYS),
+      createdAt: new Date().toISOString()
     });
+    sortApplications(state.applications);
     persist();
     renderTracker();
     toast('Logged - follow up on ' + addDaysISO(sent, FOLLOWUP_DAYS) + '.');
@@ -468,6 +486,11 @@
     return state.applications;
   }
 
+  // Below 760px the table becomes one card per row and the <thead> is hidden,
+  // so every cell has to carry its own label. Same order as the <thead>.
+  var COLUMN_LABELS = ['Company', 'Email', 'Role', 'Template', 'Date sent',
+                       'Status', 'Response date', 'Follow-up on', 'Notes'];
+
   function renderTrackerRows() {
     var body = $('trackerBody');
     body.textContent = '';
@@ -485,7 +508,9 @@
         cellInput(a, 'responseDate', 'date'),
         cellInput(a, 'followUpOn', 'date'),
         cellInput(a, 'notes')
-      ].forEach(function (control) { tr.appendChild(el('td', null, [control])); });
+      ].forEach(function (control, i) {
+        tr.appendChild(el('td', { 'data-label': COLUMN_LABELS[i] }, [control]));
+      });
 
       tr.appendChild(el('td', null, [
         el('button', {
@@ -644,43 +669,137 @@
     var bar = $('storageBar');
     var text = $('storageText');
     var supported = window.CLStorage.supportsFS();
+    var fileAttached = !!st.fileName;
 
-    if (st.mode === 'file') {
-      bar.classList.remove('is-unsaved');
-      var suffix = st.saving ? ' · saving…' : (st.error ? ' · ⚠ ' + st.error : ' · saved');
-      text.textContent = '💾 Saving to: ' + st.fileName + suffix;
+    bar.classList.remove('is-unsaved');
+    bar.classList.remove('is-synced');
+
+    if (st.mode === 'cloud') {
+      bar.classList.add('is-synced');
+      var who = st.user.email || st.user.name || 'your account';
+      var tail;
+      if (st.error) tail = ' · ⚠ ' + st.error;
+      else if (st.offline) tail = ' · offline, your changes are queued';
+      else if (st.saving || st.pending) tail = ' · syncing…';
+      else tail = ' · synced on every device';
+      text.textContent = '☁ ' + who + tail;
+    } else if (st.mode === 'file') {
+      text.textContent = '💾 Saving to: ' + st.fileName +
+        (st.saving ? ' · saving…' : (st.error ? ' · ⚠ ' + st.error : ' · saved'));
+    } else if (st.configBroken) {
+      bar.classList.add('is-unsaved');
+      text.textContent = '⚠ app/config.js failed to load - open your browser console for the ' +
+                         'syntax error. Running in browser-only mode until it is fixed.';
     } else if (st.needsPermission) {
       bar.classList.add('is-unsaved');
       text.textContent = '⚠ Click “Reconnect file” to keep saving to ' + st.pendingName + '.';
     } else {
       bar.classList.add('is-unsaved');
-      text.textContent = supported
-        ? '⚠ Not saved to a file - your data lives in this browser only. Create a data file, or export to back up.'
-        : '⚠ This browser has no File System Access API - your data lives in this browser only. Export regularly to back up.';
+      text.textContent = (st.cloudAvailable
+        ? '⚠ This browser only. Sign in to sync your tracker to your phone and every other device.'
+        : supported
+          ? '⚠ Not saved to a file - your data lives in this browser only. Create a data file, or export to back up.'
+          : '⚠ This browser has no File System Access API - your data lives in this browser only. Export regularly to back up.');
     }
 
+    $('btnSignIn').hidden = !st.cloudAvailable || st.mode === 'cloud';
+    $('btnAccount').hidden = st.mode !== 'cloud';
     $('btnReconnect').hidden = !st.needsPermission;
-    $('btnCreateFile').hidden = !supported || st.mode === 'file';
-    $('btnOpenFile').hidden = !supported || st.mode === 'file';
+    $('btnCreateFile').hidden = !supported || fileAttached || st.mode === 'cloud';
+    $('btnOpenFile').hidden = !supported || fileAttached || st.mode === 'cloud';
   }
 
+  /**
+   * Swap the whole state under the UI. A remote change can land while someone
+   * is typing, so put the caret back where it was.
+   */
   function adoptState(raw) {
+    var active = document.activeElement;
+    var key = active && active.getAttribute ? active.getAttribute('data-key') : null;
+    var id = active && active.id ? active.id : null;
+    var caret = null;
+    try { caret = active && 'selectionStart' in active ? active.selectionStart : null; }
+    catch (e) { caret = null; }
+
     state = normalize(raw);
     renderProfile();
     renderTemplatePickers();
     renderTemplateEditor();
     renderTracker();
     renderPreview();
+
+    var again = key ? document.querySelector('[data-key="' + key + '"]') : (id ? $(id) : null);
+    if (!again) return;
+    again.focus();
+    try { if (caret !== null && again.setSelectionRange) again.setSelectionRange(caret, caret); }
+    catch (e) { /* selectionStart is not settable on every input type */ }
   }
 
-  function bootStorage() {
-    window.CLStorage.onStatus(renderStorage);
-    renderStorage(window.CLStorage.getStatus());
+  /* ------------------------------------------------------------------ modals */
 
-    window.CLStorage.restoreFile().then(function (fileState) {
-      if (fileState) { adoptState(fileState); toast('Loaded your data file.'); }
-      else if (window.CLStorage.hasFile()) { persist(); } // empty file: seed it
-    }).catch(function () { /* stay on the local mirror */ });
+  function openModal(id) {
+    $(id).hidden = false;
+    document.body.classList.add('modal-open');
+  }
+
+  function closeModal(id) {
+    $(id).hidden = true;
+    if (!document.querySelector('.modal:not([hidden])')) document.body.classList.remove('modal-open');
+  }
+
+  var pendingMerge = null; // resolver for the "both sides have data" dialog
+
+  function askMerge(localState, cloudState) {
+    return new Promise(function (resolve) {
+      $('mergeSummary').textContent =
+        'This browser holds ' + localState.applications.length + ' application(s); ' +
+        'your account holds ' + cloudState.applications.length + '.';
+      pendingMerge = resolve;
+      openModal('mergeModal');
+    });
+  }
+
+  function answerMerge(choice) {
+    var resolve = pendingMerge;
+    pendingMerge = null;
+    closeModal('mergeModal');
+    if (resolve) resolve(choice);
+  }
+
+  function authMessage(error) {
+    var e = $('authError');
+    e.hidden = !error;
+    e.textContent = error ? '⚠ ' + error : '';
+  }
+
+  function runAuth(factory) {
+    var button = $('btnSignInEmail');
+    button.disabled = true;
+    authMessage('');
+    var p;
+    try { p = factory(); } catch (err) { p = Promise.reject(err); }
+    Promise.resolve(p).then(function () {
+      closeModal('authModal');
+    }).catch(function (err) {
+      authMessage(err && err.message ? err.message : String(err));
+    }).then(function () {
+      button.disabled = false;
+    });
+  }
+
+  function credentials() {
+    return { email: $('authEmail').value.trim(), password: $('authPassword').value };
+  }
+
+  function initStore() {
+    window.CLStore.init({
+      getState: function () { return state; },
+      normalize: normalize,
+      onState: function (next) { adoptState(next); },
+      onStatus: renderStorage,
+      askMerge: askMerge,
+      toast: toast
+    });
   }
 
   /* ------------------------------------------------------------------ wiring */
@@ -732,8 +851,10 @@
       state.applications.unshift({
         id: uid(), company: '', email: '', role: '', templateId: '',
         dateSent: sent, status: 'pending', responseDate: null, notes: '',
-        followUpOn: addDaysISO(sent, FOLLOWUP_DAYS)
+        followUpOn: addDaysISO(sent, FOLLOWUP_DAYS),
+        createdAt: new Date().toISOString()
       });
+      sortApplications(state.applications);
       currentView = 'all';
       document.querySelectorAll('#viewFilters button').forEach(function (b) {
         b.classList.toggle('is-active', b.getAttribute('data-view') === 'all');
@@ -788,6 +909,70 @@
       window.CLStorage.exportJSON(state);
       toast('JSON exported.');
     });
+    // Sign-in dialog
+    $('btnSignIn').addEventListener('click', function () {
+      var project = window.CL_CONFIG && window.CL_CONFIG.firebase && window.CL_CONFIG.firebase.projectId;
+      if (project) $('authProject').textContent = 'the “' + project + '”';
+      authMessage('');
+      openModal('authModal');
+      $('authEmail').focus();
+    });
+    $('btnAuthClose').addEventListener('click', function () { closeModal('authModal'); });
+    $('btnSignInEmail').addEventListener('click', function () {
+      var c = credentials();
+      runAuth(function () { return window.CLStore.signInEmail(c.email, c.password); });
+    });
+    $('authPassword').addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') $('btnSignInEmail').click();
+    });
+
+    // Merge dialog
+    $('btnMergeBoth').addEventListener('click', function () { answerMerge('merge'); });
+    $('btnMergeCloud').addEventListener('click', function () { answerMerge('cloud'); });
+    $('btnMergeLocal').addEventListener('click', function () {
+      if (!confirm('Everything currently in your account will be replaced by this browser\'s data. Continue?')) return;
+      answerMerge('local');
+    });
+
+    // Account dialog
+    $('btnAccount').addEventListener('click', function () {
+      var st = window.CLStore.getStatus();
+      $('accountWho').textContent = st.user
+        ? 'Signed in as ' + (st.user.email || st.user.name || st.user.uid) + '.'
+        : '';
+      openModal('accountModal');
+    });
+    $('btnAccountClose').addEventListener('click', function () { closeModal('accountModal'); });
+    $('btnSignOut').addEventListener('click', function () {
+      closeModal('accountModal');
+      window.CLStore.signOut(false).then(function () { toast('Signed out.'); });
+    });
+    $('btnSignOutForget').addEventListener('click', function () {
+      if (!confirm('Sign out and erase this browser\'s copy of your data? Your account keeps everything.')) return;
+      closeModal('accountModal');
+      window.CLStore.signOut(true).then(function () { toast('Signed out. This browser is clean.'); });
+    });
+    $('btnWipeCloud').addEventListener('click', function () {
+      if (!confirm('Permanently delete every application, template and profile field stored in your account? This cannot be undone.')) return;
+      window.CLStore.wipeCloud().then(function () {
+        closeModal('accountModal');
+        toast('Your cloud data was deleted.');
+      }).catch(function (err) { toast('Delete failed: ' + (err.message || err)); });
+    });
+
+    document.querySelectorAll('.modal').forEach(function (m) {
+      m.addEventListener('click', function (e) {
+        if (e.target !== m || m.id === 'mergeModal') return; // the merge choice is not optional
+        closeModal(m.id);
+      });
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key !== 'Escape') return;
+      ['authModal', 'accountModal'].forEach(function (id) {
+        if (!$(id).hidden) closeModal(id);
+      });
+    });
+
     $('btnImportJSON').addEventListener('click', function () { $('importInput').click(); });
     $('importInput').addEventListener('change', function (e) {
       var file = e.target.files[0];
@@ -805,10 +990,17 @@
       e.target.value = '';
     });
 
-    window.addEventListener('beforeunload', function () { window.CLStorage.flush(); });
+    window.addEventListener('beforeunload', function () { window.CLStore.flush(); });
     document.addEventListener('visibilitychange', function () {
-      if (document.visibilityState === 'hidden') window.CLStorage.flush();
+      if (document.visibilityState === 'hidden') window.CLStore.flush();
     });
+  }
+
+  /* Offline shell, and the "Add to home screen" prompt on phones. */
+  function registerServiceWorker() {
+    if (!('serviceWorker' in navigator)) return;
+    if (location.protocol === 'file:') return;
+    navigator.serviceWorker.register('sw.js').catch(function () { /* not fatal */ });
   }
 
   /* -------------------------------------------------------------------- boot */
@@ -830,7 +1022,8 @@
     renderTemplateEditor();
     renderTracker();
     renderPreview();
-    bootStorage();
+    initStore();
+    registerServiceWorker();
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);

@@ -1,0 +1,25 @@
+{
+  "name": "careerlauncher",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Open dataset of public company hiring emails, plus a tracker app you can deploy for yourself.",
+  "license": "ODC-BY-1.0",
+  "repository": { "type": "git", "url": "https://github.com/byborh/careerLauncher.git" },
+  "engines": { "node": ">=18" },
+  "packageManager": "pnpm@10.15.1",
+  "scripts": {
+    "seed": "node app/scripts/build-seed.js",
+    "dev": "firebase emulators:start --only hosting",
+    "dev:full": "firebase emulators:start",
+    "test": "node --test tests/app.test.mjs tests/cloud.test.mjs",
+    "test:rules": "firebase emulators:exec --only firestore \"node --test tests/rules.test.mjs\"",
+    "deploy": "firebase deploy",
+    "deploy:rules": "firebase deploy --only firestore:rules"
+  },
+  "devDependencies": {
+    "@firebase/rules-unit-testing": "^5.0.1",
+    "firebase": "^12.17.1",
+    "firebase-tools": "^14.0.0",
+    "jsdom": "^26.0.0"
+  }
+}

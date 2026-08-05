@@ -1,6 +1,6 @@
-/* seed-companies.js — GENERATED, do not edit by hand.
- * Snapshot of the README company table so the app works offline / on first run.
- * Regenerate: node app/scripts/build-seed.js
+/* seed-companies.js - GENERATED, do not edit by hand.
+ * Snapshot of data/companies.md so the app works offline / on first run.
+ * Regenerate: pnpm run seed
  * Rows: 129
  */
 window.CL_SEED_COMPANIES = [

@@ -1,0 +1,16 @@
+{
+  "name": "CareerLauncher Tracker",
+  "short_name": "CareerLauncher",
+  "description": "Pick a company, write one honest email, and track every reply - on any device.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f4f6f9",
+  "theme_color": "#f4f6f9",
+  "categories": ["productivity", "education"],
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "icon-maskable.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ]
+}

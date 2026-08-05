@@ -76,17 +76,6 @@
     }).catch(function () { return null; });
   }
 
-  function idbClear() {
-    return idb().then(function (db) {
-      return new Promise(function (resolve) {
-        var tx = db.transaction(IDB_STORE, 'readwrite');
-        tx.objectStore(IDB_STORE).delete(IDB_KEY);
-        tx.oncomplete = function () { resolve(); };
-        tx.onerror = function () { resolve(); };
-      });
-    }).catch(function () { /* noop */ });
-  }
-
   /* ------------------------------------------------------------ permissions */
 
   function verifyPermission(handle, readWrite) {
@@ -202,16 +191,7 @@
     });
   }
 
-  function detachFile() {
-    fileHandle = null;
-    return idbClear().then(function () { emit(status()); });
-  }
-
   function hasFile() { return !!fileHandle; }
-
-  function rememberedName() {
-    return idbGet().then(function (h) { return h ? h.name : null; });
-  }
 
   /* ----------------------------------------------------------------- save */
 
@@ -225,6 +205,11 @@
       var raw = root.localStorage.getItem(LS_STATE_KEY);
       return raw ? JSON.parse(raw) : null;
     } catch (e) { return null; }
+  }
+
+  /** Wipe the browser mirror - "sign out and forget this browser". */
+  function clearLocal() {
+    try { root.localStorage.removeItem(LS_STATE_KEY); } catch (e) { /* noop */ }
   }
 
   /** Mirror immediately, write the real file debounced. */
@@ -320,15 +305,14 @@
     onStatus: onStatus,
     getStatus: status,
     hasFile: hasFile,
-    rememberedName: rememberedName,
     openFile: openFile,
     createFile: createFile,
     restoreFile: restoreFile,
     reconnectFile: reconnectFile,
-    detachFile: detachFile,
     save: save,
     flush: flush,
     loadLocal: loadLocal,
+    clearLocal: clearLocal,
     exportJSON: exportJSON,
     importJSON: importJSON,
     exportCSV: exportCSV,

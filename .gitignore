@@ -1,1 +1,14 @@
 /app/PROMPT.md
+
+# Firebase / tooling
+node_modules/
+.firebaserc
+.firebase/
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+*.log
+
+# Your own exported tracker data, if you keep it in the repo folder
+careerlauncher-data.json
+careerlauncher-tracker.csv

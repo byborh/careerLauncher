@@ -15,6 +15,7 @@
   --warn-ink: #8a5a06;
   --danger: #b42318;
   --ok: #157347;
+  --ok-bg: #e8f5ee;
   --radius: 8px;
   color-scheme: light; /* keep native date pickers and scrollbars light too */
 }
@@ -52,9 +53,10 @@ h2 { font-size: 15px; margin: 0 0 12px; text-transform: uppercase; letter-spacin
 .tab:hover { background: var(--bg); color: var(--ink); }
 .tab.is-active { background: var(--accent); color: var(--accent-ink); }
 
+.topbar-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+
 /* Credit where it's due: the dataset this whole app stands on. */
 .repo-link {
-  margin-left: auto;
   display: inline-flex; align-items: center; gap: 7px;
   padding: 6px 11px;
   border: 1px solid var(--line); border-radius: 999px;
@@ -72,7 +74,9 @@ h2 { font-size: 15px; margin: 0 0 12px; text-transform: uppercase; letter-spacin
   font-size: 13px; flex-wrap: wrap;
 }
 .storagebar.is-unsaved { background: var(--warn-bg); color: var(--warn-ink); }
+.storagebar.is-synced { background: var(--ok-bg); color: var(--ok); }
 .storage-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+.storage-text { min-width: 0; }
 
 main { padding: 20px; max-width: 1500px; margin: 0 auto; }
 
@@ -217,11 +221,75 @@ table.tracker tr.is-due td { background: var(--warn-bg); }
 
 .empty { padding: 24px; text-align: center; color: var(--muted); }
 
+/* ----------------------------------------------------------------- modals */
+
+.modal {
+  position: fixed; inset: 0; z-index: 60;
+  display: flex; align-items: center; justify-content: center;
+  padding: 16px;
+  background: rgba(20, 23, 27, .45);
+  overflow-y: auto;
+}
+.modal[hidden] { display: none; }
+body.modal-open { overflow: hidden; }
+
+.modal-card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 20px;
+  width: 100%; max-width: 420px;
+  box-shadow: 0 18px 50px rgba(0,0,0,.25);
+  max-height: 100%; overflow-y: auto;
+}
+.modal-card h2 { margin-bottom: 6px; }
+.modal-actions { margin-top: 16px; }
+
 /* ------------------------------------------------------------------ toast */
 
 .toast {
   position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%);
   background: var(--ink); color: var(--bg);
   padding: 10px 16px; border-radius: 999px; font-size: 14px;
-  z-index: 50; box-shadow: 0 6px 20px rgba(0,0,0,.2);
+  z-index: 70; box-shadow: 0 6px 20px rgba(0,0,0,.2);
+  max-width: calc(100vw - 32px); text-align: center;
+}
+
+/* ------------------------------------------------------------------ phone */
+
+@media (max-width: 760px) {
+  .topbar { gap: 10px; padding: 8px 12px; }
+  .tabs { order: 3; width: 100%; }
+  .tab { flex: 1; text-align: center; padding: 9px 8px; }
+  .storagebar { padding: 8px 12px; }
+  main { padding: 12px; }
+
+  /* Fingers, not mice. */
+  input, select, textarea, .btn { min-height: 40px; }
+  .btn-sm { min-height: 34px; }
+
+  /* A 10-column spreadsheet does not fit in a hand. One card per application,
+     each field labelled by the header it lost. */
+  .tablewrap { background: transparent; border: 0; overflow: visible; }
+  table.tracker { min-width: 0; }
+  table.tracker, table.tracker tbody, table.tracker tr, table.tracker td { display: block; width: 100%; }
+  table.tracker thead { display: none; }
+  table.tracker tr {
+    background: var(--panel);
+    border: 1px solid var(--line); border-radius: var(--radius);
+    margin-bottom: 10px; padding: 8px 12px 12px;
+  }
+  table.tracker tr.is-due { border-color: var(--warn-ink); }
+  table.tracker tr.is-due td { background: transparent; }
+  table.tracker td {
+    display: grid; grid-template-columns: 40% 1fr; align-items: center; gap: 10px;
+    padding: 5px 0; border-bottom: 0;
+  }
+  table.tracker td::before { content: attr(data-label); font-size: 12px; color: var(--muted); }
+  table.tracker td:last-child { grid-template-columns: 1fr; justify-items: end; }
+  table.tracker td:last-child::before { content: none; }
+  table.tracker input, table.tracker select { border-color: var(--line); background: var(--field); }
+
+  .dash { gap: 6px; }
+  .stat { min-width: 0; flex: 1 1 88px; padding: 8px 10px; }
 }

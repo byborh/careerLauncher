@@ -2,9 +2,13 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>CareerLauncher Tracker</title>
+<meta name="description" content="Pick a company from the CareerLauncher dataset, write one honest email, and track every reply.">
+<meta name="theme-color" content="#f4f6f9">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='26'>🚀</text></svg>">
+<link rel="apple-touch-icon" href="icon.svg">
+<link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -16,18 +20,22 @@
     <button class="tab" data-screen="tracker">Tracker <span class="pill" id="tabCount">0</span></button>
     <button class="tab" data-screen="profile">Profile &amp; Templates</button>
   </nav>
-  <a class="repo-link" href="https://github.com/byborh/careerLauncher" target="_blank" rel="noopener noreferrer"
-     title="CareerLauncher - the open dataset this app is built on">
-    <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" fill="currentColor">
-      <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/>
-    </svg>
-    <span>byborh/careerLauncher</span>
-  </a>
+  <div class="topbar-right">
+    <a class="repo-link" href="https://github.com/byborh/careerLauncher" target="_blank" rel="noopener noreferrer"
+       title="CareerLauncher - the open dataset this app is built on">
+      <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" fill="currentColor">
+        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/>
+      </svg>
+      <span>byborh/careerLauncher</span>
+    </a>
+  </div>
 </header>
 
 <div class="storagebar" id="storageBar">
   <span class="storage-text" id="storageText">Loading…</span>
   <span class="storage-actions">
+    <button class="btn btn-sm btn-primary" id="btnSignIn" hidden>Sign in to sync</button>
+    <button class="btn btn-sm" id="btnAccount" hidden>Account</button>
     <button class="btn btn-sm" id="btnCreateFile">Create data file</button>
     <button class="btn btn-sm" id="btnOpenFile">Open data file</button>
     <button class="btn btn-sm" id="btnReconnect" hidden>Reconnect file</button>
@@ -231,12 +239,92 @@
 
 </main>
 
+<!-- ==================================================== D. SIGN-IN DIALOG -->
+<div class="modal" id="authModal" hidden>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+    <div class="row-between">
+      <h2 id="authTitle">Sync across your devices</h2>
+      <button class="btn btn-sm btn-ghost" id="btnAuthClose" aria-label="Close">✕</button>
+    </div>
+    <p class="muted small">
+      The same tracker on your laptop and your phone. Your data is stored in
+      <em id="authProject">this deployment's</em> Firebase project and only you
+      can read it.
+    </p>
+
+    <label for="authEmail">Email</label>
+    <input type="email" id="authEmail" autocomplete="username" placeholder="you@example.com">
+
+    <label for="authPassword">Password</label>
+    <input type="password" id="authPassword" autocomplete="current-password">
+
+    <p class="blocker" id="authError" hidden></p>
+
+    <div class="btn-group modal-actions">
+      <button class="btn btn-primary" id="btnSignInEmail">Sign in</button>
+    </div>
+
+    <p class="muted small">
+      This app does not create accounts and cannot reset passwords — it is your
+      own deployment, for you. Add your user, or change its password, in the
+      Firebase console: <strong>Authentication &gt; Users</strong>.
+    </p>
+  </div>
+</div>
+
+<!-- ===================================================== E. MERGE DIALOG -->
+<div class="modal" id="mergeModal" hidden>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="mergeTitle">
+    <h2 id="mergeTitle">This browser and your account both hold data</h2>
+    <p class="small" id="mergeSummary"></p>
+    <p class="muted small">
+      Merging keeps every application from both sides; when the same one exists
+      twice, the account's version wins.
+    </p>
+    <div class="btn-group modal-actions">
+      <button class="btn btn-primary" id="btnMergeBoth">Merge both</button>
+      <button class="btn" id="btnMergeCloud">Keep the account only</button>
+      <button class="btn btn-danger" id="btnMergeLocal">Replace the account with this browser</button>
+    </div>
+  </div>
+</div>
+
+<!-- =================================================== F. ACCOUNT DIALOG -->
+<div class="modal" id="accountModal" hidden>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="accountTitle">
+    <div class="row-between">
+      <h2 id="accountTitle">Your account</h2>
+      <button class="btn btn-sm btn-ghost" id="btnAccountClose" aria-label="Close">✕</button>
+    </div>
+    <p class="small" id="accountWho"></p>
+    <div class="btn-group modal-actions">
+      <button class="btn" id="btnSignOut">Sign out</button>
+      <button class="btn" id="btnSignOutForget">Sign out and forget this browser</button>
+      <button class="btn btn-danger" id="btnWipeCloud">Delete my cloud data</button>
+    </div>
+    <p class="muted small">
+      “Forget this browser” also erases the local copy, so nothing of yours is
+      left behind on a shared machine.
+    </p>
+  </div>
+</div>
+
 <div class="toast" id="toast" hidden></div>
 
+<script>
+  /* cloud.js is an ES module and therefore deferred; everything else is a
+     classic script that runs first. This promise is how store.js waits for it. */
+  window.CLCloudReady = new Promise(function (resolve) {
+    window.__CL_CLOUD_RESOLVE__ = resolve;
+  });
+</script>
+<script src="config.js"></script>
 <script src="templates.js"></script>
 <script src="seed-companies.js"></script>
 <script src="data.js"></script>
 <script src="storage.js"></script>
+<script src="store.js"></script>
 <script src="app.js"></script>
+<script type="module" src="cloud.js"></script>
 </body>
 </html>

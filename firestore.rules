@@ -1,0 +1,73 @@
+rules_version = '2';
+
+/* CareerLauncher security rules.
+ *
+ * One rule, really: you can touch documents under your own uid and nothing
+ * else. Everything below that is shape validation, so a stolen API key cannot
+ * be used to turn your Firestore into free storage for someone else's data.
+ *
+ * Test them:  npm run test:rules
+ * Deploy:     firebase deploy --only firestore:rules
+ */
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedInAs(uid) {
+      return request.auth != null && request.auth.uid == uid;
+    }
+
+    function str(value, max) {
+      return value is string && value.size() <= max;
+    }
+
+    function nullableStr(value, max) {
+      return value == null || (value is string && value.size() <= max);
+    }
+
+    match /users/{uid} {
+
+      function validUser() {
+        let d = request.resource.data;
+        return d.keys().hasOnly(['version', 'profile', 'templates', 'updatedAt'])
+          && d.version is number
+          && d.profile is map
+          && d.profile.keys().hasOnly(['name', 'role', 'skills', 'portfolio',
+                                       'linkedin', 'github', 'phone', 'email', 'cvFileName'])
+          && d.templates is list
+          && d.templates.size() <= 50;
+      }
+
+      allow get, list: if signedInAs(uid);
+      allow create, update: if signedInAs(uid) && validUser();
+      allow delete: if signedInAs(uid);
+
+      match /applications/{applicationId} {
+
+        function validApplication() {
+          let d = request.resource.data;
+          return d.keys().hasOnly(['company', 'email', 'role', 'templateId', 'dateSent',
+                                   'status', 'responseDate', 'notes', 'followUpOn', 'createdAt'])
+            && str(d.company, 200)
+            && str(d.email, 320)
+            && str(d.role, 200)
+            && str(d.templateId, 100)
+            && str(d.dateSent, 40)
+            && str(d.status, 40)
+            && str(d.notes, 5000)
+            && str(d.createdAt, 40)
+            && nullableStr(d.responseDate, 40)
+            && nullableStr(d.followUpOn, 40);
+        }
+
+        allow get, list: if signedInAs(uid);
+        allow create, update: if signedInAs(uid) && validApplication();
+        allow delete: if signedInAs(uid);
+      }
+    }
+
+    // Nothing else in this database is reachable from a browser.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

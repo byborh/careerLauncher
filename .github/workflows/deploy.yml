@@ -1,0 +1,94 @@
+name: Deploy
+
+# Firebase Hosting + Firestore rules, straight from the repo.
+#
+# Set this up once, in your fork:
+#   1. npm install -g firebase-tools
+#   2. firebase init hosting:github      (creates the FIREBASE_SERVICE_ACCOUNT secret for you)
+#      - or add the secret by hand: a service account JSON with the
+#        "Firebase Hosting Admin" and "Firebase Rules Admin" roles.
+#   3. Add a repository variable FIREBASE_PROJECT_ID with your project id.
+#
+# The Firebase web config lives in app/config.js and is committed on purpose -
+# it is public, and it is what makes "fork, edit one file, deploy" possible.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - run: pnpm install --frozen-lockfile
+
+      - name: Generated files must match data/companies.md
+        run: |
+          pnpm run seed
+          git diff --exit-code app/seed-companies.js README.md \
+            || (echo "::error::Generated files are stale - run 'pnpm run seed' and commit the result." && exit 1)
+
+      - name: App and sync behaviour
+        run: pnpm test
+
+      - name: Security rules
+        run: pnpm run test:rules
+
+  deploy:
+    needs: verify
+    runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Deploy Firestore rules
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          PROJECT_ID: ${{ vars.FIREBASE_PROJECT_ID }}
+        run: |
+          # The service account needs the "Firebase Rules Admin" role for this
+          # step; drop it if you would rather deploy rules from your laptop.
+          printf '%s' "$FIREBASE_SERVICE_ACCOUNT" > "$RUNNER_TEMP/sa.json"
+          export GOOGLE_APPLICATION_CREDENTIALS="$RUNNER_TEMP/sa.json"
+          pnpm dlx firebase-tools deploy --only firestore:rules --project "$PROJECT_ID" --non-interactive
+          rm -f "$RUNNER_TEMP/sa.json"
+
+      - name: Preview channel for this pull request
+        if: github.event_name == 'pull_request'
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          projectId: ${{ vars.FIREBASE_PROJECT_ID }}
+          expires: 7d
+
+      - name: Live deploy
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          projectId: ${{ vars.FIREBASE_PROJECT_ID }}
+          channelId: live

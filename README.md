@@ -1,174 +1,169 @@
-# [Career Launcher](https://careerlauncher.rakhymberdi.com/) 🚀
+﻿# Career Launcher 🚀
 
-**Career Launcher** is a curated collection of public emails from top tech companies, designed to help students and early-career professionals send personalized internship or spontaneous job applications efficiently.
+**An open dataset of publicly listed company hiring emails, and a tracker app you can deploy for yourself in about ten minutes.**
 
-## Features
+Live instance: **<https://careerlauncher.rakhymberdi.com/>** — or run your own, on your own Firebase project, with your own data. That is what the rest of this file is about.
 
-- Centralized list of verified public emails for careers, internships, and recruitment.
-- Ready-to-use templates for outreach.
-- Easy contribution: add new verified emails via pull requests.
-- Encourages ethical, non-spam usage.
+---
 
-## How to Use
+## What it is
 
-1. Browse the list of companies and their verified contact emails.
-2. Choose a template from the `templates` folder and personalize it.
-3. Send your email carefully and ethically — avoid spam, respect privacy, and always verify contacts before reaching out.
+Two things that work together:
 
-### Or use the tracker app
+| | |
+|---|---|
+| **The dataset** — [`data/companies.md`](data/companies.md) | 129 verified, publicly listed hiring emails from tech companies, each with a source URL and a verification date. Open data, ODC-BY. |
+| **The tracker** — [`app/`](app/) | Pick a company, merge a template with your profile into a ready-to-send email (it makes you write the "why this company" line yourself), log it, and get told who still owes you a reply. |
 
-[`app/`](app/) is a small, dependency-free web app built on this dataset: pick a
-company, merge a template with your profile into a ready-to-send email (it makes
-you write the "why this company" line yourself), then log it and get told who
-still owes you a reply. No backend, no account — your data is a JSON file you
-own. See [app/README.md](app/README.md).
+The tracker never sends anything. You copy the email and send it from your own mail client, like a human.
 
-Here is the link: https://careerlauncher.rakhymberdi.com/
+## Where your data lives — you choose
+
+The app has three storage modes and tells you which one you are in, at all times, in the bar under the header.
+
+| Mode | What it means | Needs |
+|---|---|---|
+| ☁️ **Cloud** | Signed in with an email and a password. Firestore is the source of truth, it syncs live to every device you sign in on, and it works offline. | Your own Firebase project |
+| 💾 **Data file** | A real JSON file on your disk, written on every change. No account, no network. | Chromium-based browser |
+| ⚠️ **Browser only** | `localStorage` in this one browser. The bar is yellow for a reason — export regularly. | Nothing |
+
+Cloud mode is opt-in and **not required**. Leave `firebase` as `null` in [`app/config.js`](app/config.js) and the app behaves exactly as it always has: no account, no server, no analytics.
+
+---
+
+## Deploy your own in ten minutes
+
+You get: your own URL, your own database, your own account, your tracker on your phone and your laptop at the same time. All of it on Firebase's free Spark plan, which is far more than a job search will ever consume.
+
+```bash
+# 1. Fork this repo on GitHub, then:
+git clone https://github.com/YOUR-USERNAME/careerLauncher.git
+cd careerLauncher
+pnpm install
+```
+
+```bash
+# 2. Create a Firebase project at https://console.firebase.google.com
+#    Enable Cloud Firestore, and Authentication with the Email/Password provider.
+#    Then create YOUR user: Authentication > Users > Add user.
+#    Then close the door: Authentication > Settings > User actions >
+#    uncheck "Enable create (sign-up)".
+```
+
+```bash
+# 3. Paste the web config from
+#    Project settings > Your apps > Web app > SDK setup and configuration
+#    into app/config.js, replacing `firebase: null`.
+```
+
+```bash
+# 4. Ship it.
+pnpm exec firebase login
+pnpm exec firebase use --add          # pick your project
+pnpm exec firebase deploy
+```
+
+Your app is live at `https://your-project-id.web.app`. Open it, click **Sign in to sync** with the user you created in step 2, then open the same URL on your phone — the same tracker, already there.
+
+> The app signs you in and nothing else: no "create account", no "forgot password". This is your deployment, for you — accounts are created and passwords changed in the Firebase console, under **Authentication > Users**. That is one less surface to get wrong, and it lets you disable sign-ups entirely.
+
+**The full walkthrough, with screenshots-worth of detail, is in [docs/DEPLOY.md](docs/DEPLOY.md)** — including custom domains, locking down your API key, App Check, and what the free tier actually costs (nothing, and here is the arithmetic).
+
+> **The Firebase config in `app/config.js` is not a secret.** It ships in every Firebase web app; it identifies your project, it does not authorize anything. What protects your data is [`firestore.rules`](firestore.rules): a signed-in user can read and write documents under their own `uid` and nothing else.
+
+```bash
+pnpm test              # the app and the sync logic, in a headless DOM — needs nothing
+pnpm run test:rules    # the security rules, under the Firestore emulator — needs Java
+```
+
+`test:rules` needs Java because rules are evaluated by Firestore, not by JavaScript, so testing them locally means running Firebase's emulator — which is a Java program. It is optional: CI runs it on every push. See [docs/DEPLOY.md](docs/DEPLOY.md#check-it-before-and-after).
+
+---
+
+## Run it locally
+
+```bash
+pnpm run dev          # the app on localhost:5000, talking to your real project
+pnpm run dev:full     # + throwaway Auth and Firestore emulators (needs Java)
+```
+
+Or with no Firebase at all — the app is plain HTML, CSS and JavaScript with no build step:
+
+```bash
+cd app && python -m http.server 8000
+```
+
+Opening `app/index.html` straight from disk works too, but browsers block the File System Access API on `file://`, so you are limited to Export/Import.
+
+## Install it on your phone
+
+The app is a PWA. Open your deployed URL on your phone and use **Add to home screen**. It installs, opens without browser chrome, and keeps working in the metro — Firestore queues your changes and syncs them when you come back up.
+
+---
+
+## The dataset
+
+<!-- COMPANIES:START - GENERATED by `pnpm run seed`. Edit data/companies.md, not this. -->
+
+| Company | Role Email | Location | What they do |
+|---|---|---|---|
+| Thales | `careers@thalesdsi.com` | Global | Global tech leader, defense, aerospace. |
+| Huawei | `career@huawei.com` | Global | Chinese multinational technology company. |
+| NVIDIA | `hr@nvidia.com` | Global | American manufacturer of graphics cards/AI accelerators. |
+| Samsung | `emergingtalent@samsung.com` | Global | South Korean multinational electronics and technology company. |
+| Aclima | `hello@aclima.io` | San Francisco, CA | Aclima is a climate-tech company that focuses on mapping and analyzing air pollution. |
+| Scaleai AI | `info@scaleai.ca` | Montreal, QC H2S 3J9, CANADA | American company specializing in AI. |
+| Tastemade | `hello@tastemade.com` | Global | Destination for food lovers and home chefs alike. |
+| Garmin | `careers.ge@garmin.com` | Global | It provides innovative GPS technology in various markets. |
+| Flexe | `hello@flexe.com` | Global | Flexe offers flexible logistics warehousing. |
+| Toyota | `careers@toyotaofmanhattan.com` | Manhattan, US | One of the world's largest automobile manufacturers. |
+| Cerebras | `tom@cerebras.net` | Global | The go-to platform for fast and effortless AI training. |
+| Arcticwolf | `recruiting@arcticwolf.com` | Global | AI-driven cybersecurity protection tailored to the needs of organizations. |
+| Gatsby | `jobs@gatsbyjs.com` | Global | React-based open source framework with performance, scalability and security built-in. |
+| Envoy | `careers@weareenvoy.com` | Global | It brings everything you need to seamlessly and securely run your workplace into one. |
+| Hoppercs | `admin@hoppercs.com` | Global | It provides flexible recruitment and placement solutions in the healthcare sector. |
+| Tesla | `TA-Recruitment@tesla.com` | Global | American multinational automotive and clean energy company. |
+| Jack Henry | `recruiting@jackhenry.com` | Global | American company devoted to financial technology and payment processing services. |
+| ABB | `US-Askhr@abb.com` | Global | Swedish-Swiss multinational company that is primarily active in products for electricity transmission and automation. |
+| Aurora Innovations | `careers@aurora-innovations.com` | Global | An American company specializing in the development of autonomous driving systems. |
+| Triafed | `hr@triafed.com` | Global | Tria Federal delivers digital services and technology solutions that support the health and safety of veterans etc... |
+
+**20 of 88 companies shown.** The full list — with domains, team labels, source URLs and verification dates — is in [`data/companies.md`](data/companies.md).
+
+<!-- COMPANIES:END -->
+
+Everything lives in [`data/companies.md`](data/companies.md): one Markdown table, eight columns, one row per company.
+
+- The app ships a snapshot of it ([`app/seed-companies.js`](app/seed-companies.js)) so it works offline and on first run.
+- **Update data** in the app re-fetches the live file and re-parses it.
+- Rows that are **not** application targets — accessibility/accommodation inboxes, recruiting-fraud inboxes, EEO addresses — are hidden from the picker. Generic `hello@`/`info@` addresses are shown with a *generic inbox* warning.
+
+If you maintain your own list, point `datasetUrl` in [`app/config.js`](app/config.js) at your fork and regenerate the snapshot:
+
+```bash
+pnpm run seed
+```
+
+## Repository layout
+
+| Path | What it is |
+|---|---|
+| [`data/companies.md`](data/companies.md) | the dataset — the single source of truth |
+| [`app/`](app/) | the tracker app ([its own README](app/README.md) explains every file) |
+| [`templates/`](templates/) | the outreach templates, in Markdown |
+| [`firestore.rules`](firestore.rules) | who can read and write what |
+| [`tests/`](tests/) | app, sync and security-rule tests |
+| [`firebase.json`](firebase.json) | hosting, rules and emulator configuration |
+| [`docs/DEPLOY.md`](docs/DEPLOY.md) | the full deployment walkthrough |
+
+---
 
 ## Contributing
 
-We welcome contributions! Please ensure all added emails are **publicly listed** on official websites (careers pages, press contacts, etc.) and include a source URL. See `CONTRIBUTING.md` for details.
+We welcome contributions. Every added email must be **publicly listed** on an official website (careers page, press contacts, etc.) and come with a source URL. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License
 
-This database is released under the **Open Data Commons Attribution License (ODC-BY)**.  
-You are free to share, create, and adapt as long as you provide proper attribution.  
-See [LICENSE](LICENSE) for full details.
+The dataset is released under the **Open Data Commons Attribution License (ODC-BY)**. You are free to share, create and adapt it as long as you provide attribution. See [LICENSE](LICENSE).
 
-⚠️ **Disclaimer**: All emails are collected from public sources. Use responsibly. Do not send bulk unsolicited emails. Respect privacy and applicable laws.
-
-
-
-# Big Tech Contacts
-
-| Company      | Domain       | Role Email                         | Department / Team       | Location       | Description                                      | Source URL                          | Last Verified |
-|-------------|-------------|-----------------------------------|------------------------|----------------|-------------------------------------------------|------------------------------------|---------------|
-| Thales      | thalesgroup.com  | careers@thalesdsi.com          | For Employment          | Global         | Global tech leader, defense, aerospace.       | https://www.thalesdsi.com/contact/ | 2025-10-18    |
-| Huawei      | huawei.com  | career@huawei.com          | For Employment          | Global         | Chinese multinational technology company.       | https://career.huawei.com/reccampportal/portal5/contact-hr.html | 2025-10-18    |
-| NVIDIA      | nvidia.com  | hr@nvidia.com          | For Employment          | Global         | American manufacturer of graphics cards/AI accelerators.       | https://www.nvidia.com/docs/IO/82694/NVIDIA_SC09_JobPostings.pdf | 2025-10-18    |
-| Samsung      | samsung.com  | emergingtalent@samsung.com          | For questions about applications          | Global         | South Korean multinational electronics and technology company.       | https://www.samsung.com/uk/aboutsamsung/careers/emerging-talent/ | 2025-10-18    |
-| Aclima      | aclima.earth  | hello@aclima.io          | For questions about applications          | San Francisco, CA         | Aclima is a climate-tech company that focuses on mapping and analyzing air pollution.       | https://aclima.earth/contact-us | 2025-10-19    |
-| Scaleai AI      | scaleai.ca  | info@scaleai.ca          | For questions about everything          | Montreal, QC H2S 3J9, CANADA         | American company specializing in AI.       | https://www.scaleai.ca/about-us/contact-us/ | 2025-10-20    |
-| Tastemade      | tastemade.com  | hello@tastemade.com          | For questions about everything          | Global         | Destination for food lovers and home chefs alike.       | https://www.tastemade.com/contact | 2025-10-21    |
-| Splunk      | splunk.com  | accessiblecareers@splunk.com          | For Employment          | Global         | A company that produces software for searching, tracking, and analyzing machine data.       | https://www.splunk.com/en_us/careers/how-we-hire.html | 2025-10-22    |
-| Garmin      | garmin.com  | careers.ge@garmin.com          | For Employment          | Global         | It provides innovative GPS technology in various markets.       | https://www.garmin.com/en-IE/careers/ | 2025-10-23    |
-| Flexe      | flexe.com  | hello@flexe.com          | For everythings          | Global         | Flexe offers flexible logistics warehousing.       | https://www.flexe.com/careers | 2025-10-24    |
-| Toyota      | toyotaofmanhattan.com  | careers@toyotaofmanhattan.com           | For Employment          | Manhattan, US         | One of the world's largest automobile manufacturers.       | https://www.toyotaofmanhattan.com/join-our-team.htm | 2025-10-25    |
-| Cerebras      | cerebras.ai  | tom@cerebras.net           | For Employment          | Global         | The go-to platform for fast and effortless AI training.       | https://coda.io/@cerebras-careers/cerebras-interviewing-guide/college-hiring-cerebras-7 | 2025-10-26    |
-| Arcticwolf      | arcticwolf.com  | recruiting@arcticwolf.com           | For Employment          | Global         | AI-driven cybersecurity protection tailored to the needs of organizations.       | https://arcticwolf.wd1.myworkdayjobs.com/External | 2025-10-27    |
-| Autodesk      | autodesk.com  | accessibility@autodesk.com           | For everything (+Employment)          | Global         | Leader in 3D design, engineering and entertainment software.       | https://www.autodesk.com/careers/overview | 2025-10-28    |
-| Gatsby      | gatsbyjs.com  | jobs@gatsbyjs.com           | For Employment          | Global         | React-based open source framework with performance, scalability and security built-in.       | https://www.gatsbyjs.com/careers/open-source-maintainer/ | 2025-10-29    |
-| Envoy      | weareenvoy.com  | careers@weareenvoy.com           | For Employment          | Global         | It brings everything you need to seamlessly and securely run your workplace into one.       | https://www.weareenvoy.com/careers/ | 2025-10-31    |
-| Hoppercs      | hoppercs.com  | admin@hoppercs.com           | For Employment          | Global         | It provides flexible recruitment and placement solutions in the healthcare sector.       | https://hoppercs.com/careers/ | 2025-11-01    |
-| Tesla      | teslaautomation.de  | TA-Recruitment@tesla.com           | For Employment          | Global         | American multinational automotive and clean energy company.       | https://teslaautomation.de/en/recruitment | 2025-11-03    |
-| Jack Henry      | jackhenry.com  | recruiting@jackhenry.com           | For Employment          | Global         | American company devoted to financial technology and payment processing services.       | https://careers.jackhenry.com/yourexperience | 2025-11-03    |
-| The Walt Disney Company      | disney.com  | Candidate.Accommodations@Disney.com           | For Employment          | Global         | The world's leading entertainment group.       | https://sites.disney.com/lifeatdisney/career-opportunities/ | 2025-11-03    |
-| ABB      | global.abb  | US-Askhr@abb.com           | For Employment          | Global         | Swedish-Swiss multinational company that is primarily active in products for electricity transmission and automation.       | https://careers.abb/us/en/equal-employment-opportunity-and-affirmative-action | 2025-11-03    |
-| Aurora Innovations      | aurora-innovations.com  | careers@aurora-innovations.com           | For Employment          | Global         | An American company specializing in the development of autonomous driving systems.       | https://aurora-innovations.com/careers/ | 2025-11-04    |
-| Triafed      | triafed.com  | hr@triafed.com           | For Employment          | Global         | Tria Federal delivers digital services and technology solutions that support the health and safety of veterans etc...       | https://triafed.com/careers/ | 2025-11-04    |
-| HNTB      | hntb.com  | talentacquisition@hntb.com           | For Employment          | Global         | An American architectural and infrastructure design firm       | https://www.hntb.com/contact/ | 2025-11-07    |
-| GlossGenius      | glossgenius.com  | careers@glossgenius.com           | For Employment          | Global         | The all-in-one booking, payments and POS solution       | https://job-boards.greenhouse.io/glossgenius | 2025-11-07    |
-| Keysight      | keysight.com  | job_posting@Keysight.com           | USA          | Global         | it empowers innovators with software-centric design, emulation, and test solutions       | https://careers.keysight.com/location-united-states | 2025-11-07    |
-| Barclays       | home.barclays  | yourresourcingsupport@barclays.com           | For Employment          | Global         | British universal bank       | https://search.jobs.barclays/adjustments-to-the-recruitment-process | 2025-11-08    |
-| Dexcom       | dexcom.com  | talentacquisition@dexcom.com           | For Employment          | Global         | Healthcare company that develops, manufactures, produces and distributes a line of continuous glucose monitoring (CGM) systems for diabetes management       | https://www.indeed.com/q-dexcom-jobs.html?vjk=4c122bffa82bba34 | 2025-11-09    |
-| Midmark       | midmark.in  | careers@midmark.com           | For Employment          | Global         | It manufactures medical, dental, and veterinary products and provides related services       | https://www.midmark.in/careers-2/ | 2025-11-10    |
-| BAE Systems       | baesystems.com  | accessibility@baesystems.com           | For Employment          | Global         | BAE Systems is a British company operating in the defense and aerospace sectors.       | https://jobs.baesystems.com/global/en/search-results | 2025-11-13    |
-| Northrop Grumman       | northropgrumman.com  | ngc@myworkday.com           | For Employment          | Global         | It is evolving in the aerospace and defense sectors.       | https://www.northropgrumman.com/careers/early-careers-faqs | 2025-11-14    |
-| Arxanima       | arxanima.com  | talent@arxanima.com           | For Employment          | Europe         | Animation, Motion Capture... in their studios around Europe.       | https://arxanima.com/career | 2025-11-16    |
-| Bishopfox       | bishopfox.com  | careers@bishopfox.com           | For Employment          | Global         | Bishop Fox offensive security services help you find and fix vulnerabilities before they become incidents.       | https://bishopfox.com/careers | 2025-11-18    |
-| Hunt Oil Company       | huntoil.com  | fraudalert@huntoil.com           | For everythings          | Global         | Enterprise engaged in traditional exploration, unconventional resource plays, complex pipeline and processing operations.       | https://demo.huntconsolidated.com/hoc/careers.aspx | 2025-11-19    |
-| KBR, Inc       | kbr-group.com  | careers@kbr-finance.com           | For Employment          | Global         | It's an American engineering firm offering expertise in the oil industry and industrial synthesis processes.       | https://www.kbr-group.com/career/ | 2025-11-20    |
-| Corning       | corning.com  | careers@corning.com           | For Employment          | Global         | It is an American company specializing in the manufacture of glass and ceramics.       | https://www.corning.com/emea/fr/careers/locations.html | 2025-11-21    |
-| Western Governors University       | wgu.edu  | careers@wgu.edu           | For Employment          | Global         | An online university where you can earn an affordable, accredited, career-focused college degree at an accelerated pace.       | https://careers.wgu.edu/ | 2025-11-22    |
-| Rambus       | rambus.com  | talent@rambus.com           | For Employment          | Global         | Industry-leading Chips and Silicon IP Making Data Faster and Safer.       | https://www.rambus.com/careers/ | 2025-11-23    |
-| Palantir       | palantir.com  | careers@palantir.com           | For Employment          | Global         | It's a service and software publishing company specializing in data analysis and science.       | https://www.quora.com/How-do-I-contact-someone-who-works-at-Palantir-Technologies-I-was-contacted-by-a-recruiter-but-it-looks-like-a-scam | 2025-11-24    |
-| Nrgsystems       | nrgsystems.com  | hr@nrgsystems.com           | For Employment          | Global         | Users can reliably access wind and solar data, configure NRG equipment, and troubleshoot potential issues from anywhere.       | https://www.nrgsystems.com/about/careers | 2025-11-25    |
-| Sony       | sonyjobs.com  | talenthelp@am.sony.com           | For Employment          | Global         | It is a Japanese multinational corporation and is active in fields such as electronics, telephony, and information technology.       | https://www.sonyjobs.com/find-a-job.html | 2025-11-26    |
-| KLA       | kla.com  | talent.acquisition@kla.com           | For Employment          | Global         | It is an American company specializing in the design and manufacture of semiconductor production equipment.       | https://www.kla.com/careers | 2025-11-27    |
-| CareerCircle       | careercircle.com  | team@careercircle.com           | For Employment          | Global         | CareerCircle connects job-ready talent with employers and career pathways that empower success.       | https://www.facebook.com/MyCareerCircle/ | 2025-11-29    |
-| Metron       | metrongroup.co.uk  | careers@metrongroup.co.uk            | For Employment          | UK         | Independent Engineering Service Company.       | https://www.metrongroup.co.uk/about/people-careers/ | 2025-11-30    |
-| Trillium       | trilliumsupport.com  | careers@trilliumsupport.com            | For Employment          | Global         | It provide mission critical valves, pumps, and aftermarket services in oil and gas...       | https://www.trilliumsupport.com/careers | 2025-12-05    |
-| Launch Potato       | launchpotato.com  | info@launchpotato.com            | For general inquiries          | US         | South Florida's fastest growing digital media company.       | https://launchpotato.com/contact/careers | 2025-12-05    |
-| MyTime       | mytime.com  | jobs@mytime.com            | For Employment          | US         | Cloud-based appointment scheduling and point-of-sale system.       | https://mytime.pissedconsumer.com/customer-service.html | 2025-12-16    |
-| Inter Media Group       | intermediagroup.org  | careers@intermediagroup.org            | For Employment          | US         | It delivers customized solutions that keep your operations running seamlessly.       | https://www.intermediagroup.org/career-opportunities/ | 2025-12-17    |
-| Sierra Workforce Solutions       | sierraws.com  | jobs@sierraws.com            | For Employment          | US         | It specializes in the time and attendance software, time clock systems and workforce management solution industry.       | https://sierraws.com/about-us/careers/ | 2025-12-18    |
-| CrowdStrike       | crowdstrike.com  | recruiting@crowdstrike.com            | For recruiting inquiries          | Austin, TX (Global)         | Cloud-native cybersecurity company providing endpoint protection, threat intelligence and XDR.       | https://www.crowdstrike.com/en-us/careers/ | 2026-07-11    |
-| SecureSky       | securesky.com  | careers@securesky.com            | For Employment          | Omaha, NE         | Managed cloud and cybersecurity services provider focused on threat management and security posture.       | https://securesky.com/careers/ | 2026-07-11    |
-| Pen Test Partners       | pentestpartners.com  | careers@pentestpartners.com            | For Employment          | Buckingham, UK         | Cybersecurity firm specializing in penetration testing and security assessments.       | https://www.pentestpartners.com/about-us/careers/ | 2026-07-11    |
-| Nextcloud       | nextcloud.com  | jobs@nextcloud.com            | For Employment          | Stuttgart, Germany         | Open-source cloud collaboration and self-hosted file sync/share software company.       | https://nextcloud.com/jobs/ | 2026-07-11    |
-| ServerHealers       | serverhealers.com  | careers@serverhealers.com            | For Employment          | India (Global remote)         | Outsourced DevOps, cloud, and web-hosting server support services provider.       | https://serverhealers.com/careers | 2026-07-11    |
-| PCS Managed Services       | pcs-ms.com  | jobs@pcs-ms.com            | For Employment          | Memphis, TN         | Managed IT services and infrastructure provider serving the Mid-South region.       | https://www.pcs-ms.com/careers/ | 2026-07-11    |
-| Bentley Systems       | bentley.com  | careers-accessibility@bentley.com            | For accommodation requests          | Exton, PA         | Infrastructure engineering software company for design, construction and asset operations.       | https://www.bentley.com/company/careers/ | 2026-07-11    |
-| Rocket Software       | rocketsoftware.com  | people@rocketsoftware.com            | For accommodation requests          | Waltham, MA         | Enterprise software company for infrastructure, data modernization and developer tooling.       | https://www.rocketsoftware.com/en-us/careers | 2026-07-11    |
-| Dscout       | dscout.com  | accommodations@dscout.com            | For accommodation requests          | Chicago, IL         | SaaS platform for remote UX research and experience data capture.       | https://dscout.com/careers | 2026-07-11    |
-| Clearly Payments       | clearlypayments.com  | careers@clearlypayments.com            | For Employment          | Vancouver, Canada         | Payment processing and merchant services fintech company.       | https://www.clearlypayments.com/careers/ | 2026-07-11    |
-| Paymentology       | paymentology.com  | careers@paymentology.com            | For Employment          | London, UK (Global)         | Global issuer-processor and payments technology company.       | https://www.paymentology.com/en/about-us/careers | 2026-07-11    |
-| SAS Institute       | sas.com  | CareersAccessibility@sas.com            | For accommodation requests          | Cary, NC         | Analytics, data management and business intelligence software company.       | https://www.sas.com/en_us/careers.html | 2026-07-11    |
-| BambooHR       | bamboohr.com  | RecruitingFraudAlerts@bamboohr.com            | For recruiting fraud alerts          | Draper, UT         | HR SaaS platform for people management, payroll and hiring.       | https://www.bamboohr.com/careers/scam | 2026-07-11    |
-| Cledara       | cledara.com  | careers@cledara.com            | For Employment          | London, UK         | SaaS management and software spend platform for businesses.       | https://www.cledara.com/careers | 2026-07-11    |
-| Plaid       | plaid.com  | recruiting-inquiries@plaid.com            | For recruiting inquiries          | San Francisco, CA         | Fintech company providing a financial data network connecting apps to users' bank accounts.       | https://plaid.com/fraudulent-recruiting-activities-disclaimer/ | 2026-07-11    |
-| Lockheed Martin       | lockheedmartin.com  | support.services.lmcareers@lmco.com            | For accommodation requests          | Bethesda, MD         | Aerospace and defense contractor building aircraft, missiles, satellites and space systems.       | https://www.lockheedmartin.com/en-us/careers/reasonable-accommodations.html | 2026-07-11    |
-| L3Harris Technologies       | l3harris.com  | AppAssistance@L3harris.com            | For accommodation requests          | Melbourne, FL         | Aerospace and defense technology company (communications, avionics, sensors, space systems).       | https://jobs.l3harris.com/ | 2026-07-11    |
-| Zebra Technologies       | zebra.com  | workplace.acc@zebra.com            | For accommodation requests          | Lincolnshire, IL         | Enterprise hardware maker of barcode scanners, RFID, mobile computers and industrial printers.       | https://www.zebra.com/us/en/about-zebra/careers/workplace-accommodations.html | 2026-07-11    |
-| GDIT       | gdit.com  | accommodations@gdit.com            | For accommodation requests          | Falls Church, VA         | IT and defense technology services subsidiary of General Dynamics.       | https://www.gdit.com/careers/accessibility-and-accommodations/ | 2026-07-11    |
-| Deloitte       | deloitte.com  | USTalentCICInbox@deloitte.com            | For accommodation requests          | United States         | Professional services and technology consulting firm.       | https://www.deloitte.com/us/en/careers/join-deloitte/notices/assistance-for-applicants-requiring-accomodations.html | 2026-07-11    |
-| Warner Bros. Discovery       | wbd.com  | recruitadmin@wbd.com            | For accommodation requests          | New York, US         | Media and entertainment technology company (streaming, studios).       | https://careers.wbd.com/global/en/accessibility | 2026-07-11    |
-| Rivian       | rivian.com  | candidateaccommodations@rivian.com            | For accommodation requests          | Irvine, CA         | Electric vehicle and automotive technology manufacturer (trucks, SUVs, EV platforms).       | https://talents.vaia.com/companies/rivian/university-relations-recruiter-contract-cth-41500806/ | 2026-07-11    |
-| Skyworks Solutions       | skyworksinc.com  | accommodations@skyworksinc.com            | For accommodation requests          | Irvine, CA         | Semiconductor company designing analog and RF chips for wireless and connectivity.       | https://jobs.discovertechnata.com/companies/skyworks-solutions/jobs/51112900-sr-product-engineer | 2026-07-11    |
-| Marvell Technology       | marvell.com  | TAOps@marvell.com            | For accommodation requests          | Santa Clara, CA         | Semiconductor company designing data infrastructure chips (storage, networking, optical).       | https://getmereferred.com/us/job-listing/talent-acquisition-operations-manager-marvell-uscasantaclara-5-to-10-years-experience-454f53a4-dd64-4d76-8530-a87f59972503 | 2026-07-11    |
-| Blue Origin       | blueorigin.com  | EEOCompliance@blueorigin.com            | For accommodation requests          | Kent, WA         | Aerospace manufacturer and spaceflight company building rockets, engines and lunar landers.       | https://jobs.localjobnetwork.com/job/detail/79980066/Blue-Origin-Lunar-Permanence-Roles-in-Arizona | 2026-07-11    |
-| General Dynamics Mission Systems       | gd-ms.com  | accommodations@gd-ms.com            | For accommodation requests          | Fairfax, VA         | Defense technology subsidiary building mission systems, C4ISR and secure communications hardware.       | https://abilityjobfair.org/careers/general-dynamics-mission-systems/ | 2026-07-11    |
-| Electronic Arts       | ea.com  | accessibility@ea.com            | For accommodation requests          | Redwood City, CA         | One of the world's largest video game publishers and developers.       | https://www.ea.com/careers | 2026-07-11    |
-| BioNTech       | biontech.com  | jobs@biontech.de            | For Employment          | Mainz, Germany         | German biotechnology company known for mRNA-based vaccines and immunotherapies.       | https://www.biontech.com/int/en/home/careers.html | 2026-07-11    |
-| Northway Biotech       | northwaybiotech.com  | careers@northwaybiotech.com            | For Employment          | Vilnius, Lithuania         | Biotech CDMO providing biopharmaceutical development and manufacturing services.       | https://www.northwaybiotech.com/careers-us | 2026-07-11    |
-| Asurion       | asurion.com  | accessibility@asurion.com            | For accommodation requests          | Nashville, TN         | Technology care and device protection/insurance company.       | https://careers.asurion.com/us/en/accessibility | 2026-07-11    |
-| Hello Games       | hellogames.org  | jobs@hellogames.co.uk            | For Employment          | Guildford, UK         | Independent UK game studio, creators of No Man's Sky.       | https://hellogames.org/join-us/ | 2026-07-11    |
-| ORCHA       | orchahealth.com  | careers@orchahealth.com            | For Employment          | Daresbury, UK         | Digital health company providing health app review, assurance and distribution.       | https://orchahealth.com/about-us/recruitment/ | 2026-07-11    |
-| Smile Digital Health       | smiledigitalhealth.com  | careers@smiledigitalhealth.com            | For Employment          | Toronto, Canada         | Health data platform built on the HL7 FHIR standard for health IT.       | https://www.smiledigitalhealth.com/careers | 2026-07-11    |
-| Renegade Game Studios       | renegadegamestudios.com  | jobs@renegadegames.com            | For Employment          | Escondido, CA         | Tabletop and roleplaying game publisher and developer.       | https://renegadegamestudios.com/careers/ | 2026-07-11    |
-| First Solar       | firstsolar.com  | jobs@firstsolar.com            | For recruiting / accommodations          | Tempe, AZ         | Solar photovoltaic module manufacturer and utility-scale solar technology company.       | https://www.firstsolar.com/en-Emea/Careers | 2026-07-11    |
-| CTSI-Global       | ctsi-global.com  | careers@ctsi-global.com            | For Employment          | Memphis, TN         | Logistics technology and supply chain / freight audit and payment software provider.       | https://ctsi-global.com/careers/ | 2026-07-11    |
-| ChargePoint       | chargepoint.com  | recruiting@chargepoint.com            | For recruiting inquiries          | Campbell, CA         | Electric vehicle charging network and hardware/software company.       | https://www.chargepoint.com/about/opportunities | 2026-07-11    |
-| Enphase Energy       | enphase.com  | recruiting@enphaseenergy.com            | For recruiting inquiries          | Fremont, CA         | Solar microinverter and home energy / battery storage technology company.       | https://enphase.com/careers | 2026-07-11    |
-| GXO Logistics       | gxo.com  | accommodations@gxo.com            | For accommodation requests          | Greenwich, CT         | Contract logistics and warehouse-automation technology company.       | https://jobs.gxo.com/content/EEO/ | 2026-07-11    |
-| Clean Energy Fuels       | cleanenergyfuels.com  | HR@cleanenergyfuels.com            | For Employment          | Newport Beach, CA         | Renewable natural gas (RNG) and alternative vehicle-fuel infrastructure company.       | https://cleanenergyfuels.com/about-us/careers | 2026-07-11    |
-| PowerSchool       | powerschool.com  | accommodations@powerschool.com            | For accommodation requests          | Folsom, CA         | K-12 education software / student information system (SIS) platform.       | https://www.purpose.jobs/discover/companies/powerschool/jobs/35785539-application-specialist | 2026-07-11    |
-| Cloudflare       | cloudflare.com  | hr@cloudflare.com            | For accommodation requests          | San Francisco, CA         | Global networking, connectivity and web-security company operating a CDN and zero-trust platform.       | https://job-boards.greenhouse.io/cloudflare/jobs/8002300 | 2026-07-11    |
-| The Trade Desk       | thetradedesk.com  | accommodations@thetradedesk.com            | For accommodation requests          | Ventura, CA         | Programmatic advertising technology company operating a demand-side platform (DSP) for media buyers.       | https://careers.thetradedesk.com/request-an-accommodation | 2026-07-11    |
-| OpenX       | openx.com  | talent@openx.com            | For Employment          | Pasadena, CA         | Advertising technology company running a programmatic supply-side platform (SSP) and ad exchange.       | https://www.openx.com/careers/ | 2026-07-11    |
-| TDS Telecom       | tdstelecom.com  | careers@tdstelecom.com            | For Employment          | Madison, WI         | Telecommunications and broadband/fiber internet service provider serving communities across the US.       | https://tdstelecom.com/careers.html | 2026-07-11    |
-| altafiber       | altafiber.com  | recruiting@altafiber.com            | For recruiting inquiries          | Cincinnati, OH         | Fiber-optic telecom and broadband provider (formerly Cincinnati Bell) delivering internet, TV and network services.       | https://www.altafiber.com/about-us/careers | 2026-07-11    |
-| CivicPlus       | civicplus.com  | recruiting@civicplus.com            | For recruiting inquiries          | Manhattan, KS         | Govtech company providing websites, communications and civic-engagement software for local governments.       | https://www.civicplus.com/careers/faqs/ | 2026-07-11    |
-| Carbon Robotics       | carbonrobotics.com  | jobs@carbonrobotics.com            | For Employment          | Seattle, WA         | Agricultural robotics company making the LaserWeeder, an AI-driven laser weeding robot for farms.       | https://carbonrobotics.com/careers | 2026-07-11    |
-| CapSen Robotics       | capsenrobotics.com  | jobs@capsenrobotics.com            | For Employment          | Pittsburgh, PA         | Robotics software company building 3D vision and AI for robotic manipulation and industrial automation.       | https://www.capsenrobotics.com/careers | 2026-07-11    |
-| Vayu Robotics       | vayurobotics.com  | careers@vayurobotics.com            | For Employment          | Mountain View, CA         | Robotics company developing low-cost AI sensors and autonomous mobile robots for delivery and logistics.       | https://www.vayurobotics.com/company/careers | 2026-07-11    |
-| Breedr       | breedr.co  | careers@breedr.co            | For Employment          | London, UK         | Agritech company building a livestock productivity and connected supply-chain platform for farmers.       | https://www.breedr.co/en/careers/job-title4 | 2026-07-11    |
-| Merkle       | merkle.com  | jobfraud@dentsu.com            | For recruiting fraud reports          | Columbia, MD         | Data-driven marketing technology and customer-experience agency (a dentsu company) specializing in martech and CRM.       | https://www.merkle.com/careers/all-openings/743999838165155 | 2026-07-11    |
-| OIP Insurtech       | oipinsurtech.com  | recruitment@oipinsurtech.com            | For recruiting inquiries          | Henderson, NV         | Insurtech firm providing insurance process automation, software and back-office outsourcing for carriers and MGAs.       | https://www.oipinsurtech.com/careers/ | 2026-07-11    |
-| Properly       | getproperly.com  | careers@getproperly.com            | For Employment          | Remote (US)         | Proptech company offering vacation-rental operations and quality-management software for short-term rental hosts.       | https://getproperly.com/careers | 2026-07-11    |
-| The DiSTI Corporation       | disti.com  | careers@disti.com            | For accommodation requests          | Orlando, FL         | Software company building GUI development tools and virtual maintenance/simulation training for industrial and robotics systems.       | https://disti.com/reasonable-accommodation/ | 2026-07-11    |
-| Roboto AI       | roboto.ai  | jobs@roboto.ai            | For Employment          | Seattle, WA         | Robotics and AI data-infrastructure company for ingesting, searching and analyzing robot and sensor data.       | https://www.roboto.ai/careers | 2026-07-11    |
-| Planet Labs       | planet.com  | accommodations@planet.com            | For accommodation requests          | San Francisco, CA         | Earth-observation company operating one of the largest fleets of imaging satellites, providing daily global imagery.       | https://job-boards.greenhouse.io/planetlabs/jobs/7992931 | 2026-07-11    |
-| Relativity Space       | relativityspace.com  | accommodations@relativityspace.com            | For accommodation requests          | Long Beach, CA         | Aerospace launch company developing 3D-printed rockets, including the Terran family of orbital launch vehicles.       | https://job-boards.greenhouse.io/relativity/jobs/8625403002 | 2026-07-11    |
-| Sierra Nevada Corporation       | sncorp.com  | accessibility@sncorp.com            | For accommodation requests          | Sparks, NV         | Aerospace and defense company building the Dream Chaser spaceplane and advanced space and aviation systems.       | https://www.sncorp.com/careers/accommodations-request/ | 2026-07-11    |
-| IonQ       | ionq.com  | jobs@ionq.com            | For Employment          | College Park, MD         | Trapped-ion quantum computing company providing quantum hardware and cloud access to its quantum processors.       | https://www.ionq.com/contact | 2026-07-11    |
-| Xanadu       | xanadu.ai  | recruiting@xanadu.ai            | For recruiting inquiries          | Toronto, Canada         | Photonic quantum computing company and creator of the open-source PennyLane quantum machine-learning framework.       | https://xanadu.applytojob.com/apply/9M9XTPpu2b/Quantum-Scientist-Algorithms | 2026-07-11    |
-| Magic Leap       | magicleap.com  | ApplicantAccommodation@magicleap.com            | For accommodation requests          | Plantation, FL         | Augmented reality company developing enterprise AR headsets and spatial computing hardware and software.       | https://job-boards.greenhouse.io/magicleap/jobs/7868463 | 2026-07-11    |
-| Mojo Vision       | mojo.vision  | careers@mojo.vision            | For Employment          | Saratoga, CA         | Micro-LED display company developing high-density displays for AR, wearables and next-generation devices.       | https://www.mojo.vision/careers | 2026-07-11    |
-| Kopin       | kopin.com  | accessibility@kopin.com            | For accommodation requests          | Westborough, MA         | Microdisplay and wearable optics company supplying display modules for AR/VR headsets and defense wearables.       | https://www.kopin.com/about/careers/ | 2026-07-11    |
-| Everlaw       | everlaw.com  | recruiting@everlaw.com            | For recruiting inquiries          | Oakland, CA         | Cloud-based ediscovery and litigation platform for law firms and legal teams.       | https://www.everlaw.com/careers/candidate-ai-policy/ | 2026-07-11    |
-| Relativity       | relativity.com  | recruiting@relativity.com            | For recruiting inquiries          | Chicago, IL         | Ediscovery and legal data software company serving law firms, corporations and government.       | https://www.relativity.com/company/careers/interview-process/ | 2026-07-11    |
-| Fictiv       | fictiv.com  | recruiting@fictiv.com            | For recruiting inquiries          | San Francisco, CA         | Digital manufacturing platform for custom mechanical parts including 3D printing, CNC and injection molding.       | https://www.fictiv.com/careers | 2026-07-11    |
-| Desktop Metal       | desktopmetal.com  | jobs@desktopmetal.com            | For Employment          | Burlington, MA         | Additive manufacturing company making metal and polymer 3D printing systems (binder jetting).       | https://www.desktopmetal.com/careers | 2026-07-11    |
-| Toast       | toasttab.com  | candidateaccommodations@toasttab.com            | For accommodation requests          | Boston, MA         | Cloud-based restaurant point-of-sale, hardware and management platform for the hospitality industry.       | https://careers.toasttab.com/jobs/principal-product-manager-pos-ordering-remote-united-states | 2026-07-11    |
-| Cloudbeds       | cloudbeds.com  | accommodations@cloudbeds.com            | For accommodation requests          | San Diego, CA         | Hospitality management and property management software platform for hotels and lodging.       | https://www.workingnomads.com/jobs/customer-support-coach-cloudbeds-1535936 | 2026-07-11    |
-| Bose       | bose.com  | applicant_disability_accommodationrequest@bose.com            | For accommodation requests          | Framingham, MA         | Audio technology company designing headphones, speakers and professional sound systems.       | https://www.bose.com/about/careers/reasonable-accommodations | 2026-07-11    |
-| SoundCloud       | soundcloud.com  | recruiters@soundcloud.com            | For recruiting inquiries          | Berlin, Germany         | Music and audio streaming platform for creators and listeners.       | https://soundcloud.com/company/careers | 2026-07-11    |
-| Sound Incorporated       | soundinc.com  | jobs@soundinc.com            | For Employment          | Naperville, IL         | Commercial audio-visual and sound systems integration company.       | https://www.soundinc.com/careers/ | 2026-07-11    |
-| Vantor (Maxar)       | vantor.com  | careers@vantor.com            | For Employment          | Westminster, CO         | Satellite imagery and geospatial intelligence company (formerly Maxar Technologies).       | https://vantor.com/careers | 2026-07-11    |
-| FalconX       | falconx.io  | recruiting@falconx.io            | For recruiting inquiries          | San Mateo, CA         | Crypto and digital-asset prime brokerage and trading platform.       | https://job-boards.greenhouse.io/falconx | 2026-07-11    |
-| Galaxy Digital       | galaxy.com  | careers@galaxy.com            | For Employment          | New York, NY         | Crypto and digital-asset financial services and investment firm.       | https://job-boards.greenhouse.io/galaxydigitalservices | 2026-07-11    |
-| Skydio       | skydio.com  | accommodations@skydio.com            | For accommodation requests          | San Mateo, CA         | Autonomous drone (UAV) manufacturer making AI-powered flying cameras for enterprise and public safety.       | https://www.skydio.com/careers | 2026-07-11    |
-| Restaurant Technologies       | rti-inc.com  | RTCareers@rti-inc.com            | For accommodation requests          | Mendota Heights, MN         | Foodtech company providing commercial kitchen oil-management and automation solutions for restaurants.       | https://careers.rti-inc.com/us/en/ | 2026-07-11    |
-| SpotOn       | spoton.com  | careers@spoton.com            | For Employment          | San Francisco, CA         | Restaurant technology company providing point-of-sale, payments and management software.       | https://www.spoton.com/careers/ | 2026-07-11    |
-| Cook Medical       | cookmedical.com  | HR.Park48@CookMedical.com            | For accommodation requests          | Bloomington, IN         | Global medical device manufacturer producing minimally invasive interventional, surgical and endoscopy devices.       | https://www.cookmedical.com/careers/ | 2026-07-11    |
+⚠️ **Disclaimer**: all emails are collected from public sources. Use responsibly. One thoughtful email per company. Do not send bulk unsolicited email. Respect privacy and applicable laws — the app deliberately cannot become a mass-mailer, and that is a feature.
