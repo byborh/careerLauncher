@@ -16,15 +16,27 @@
  */
 window.CL_CONFIG = {
 
-  /* Paste the config object from:
-   * Firebase console > Project settings > Your apps > Web app > SDK setup > Config
+  /* From: Firebase console > Project settings > Your apps > Web app >
+   *       SDK setup and configuration > Config
+   *
+   * Firebase hands you seven fields. Four of them do something here:
+   *
+   *   apiKey      identifies the project on the Identity Toolkit and
+   *               Firestore APIs. Not a credential - it authorises nothing.
+   *   authDomain  where sign-in and password-reset links point.
+   *   projectId   which Firestore database to talk to.
+   *   appId       identifies this web app inside the project.
+   *
+   * The other three are for products this app does not use, and are left out
+   * on purpose: storageBucket (Cloud Storage), messagingSenderId (push
+   * notifications), measurementId (Analytics - firebase/analytics is never
+   * imported, so nothing is ever measured). Pasting them anyway is harmless;
+   * initializeApp simply ignores what it has no SDK for.
    *
    *   firebase: {
    *     apiKey: "AIza...",
    *     authDomain: "your-project.firebaseapp.com",
    *     projectId: "your-project",
-   *     storageBucket: "your-project.firebasestorage.app",
-   *     messagingSenderId: "000000000000",
    *     appId: "1:000000000000:web:abcdef"
    *   },
    */
@@ -32,11 +44,9 @@ window.CL_CONFIG = {
     apiKey: "AIzaSyDtljbe8scOpE_JmJXNwTh8jaApq9_VH-w",
     authDomain: "byborh-careerlauncher.firebaseapp.com",
     projectId: "byborh-careerlauncher",
-    storageBucket: "byborh-careerlauncher.firebasestorage.app",
-    messagingSenderId: "710438225804",
-    appId: "1:710438225804:web:4a753f7b4ff8bffd2978a9",
-    measurementId: "G-69B7VK2K5C"
+    appId: "1:710438225804:web:4a753f7b4ff8bffd2978a9"
   },
+
   /* Where "Update data" re-fetches the company list from. Point this at your
    * own fork if you maintain your own list. */
   datasetUrl: 'https://raw.githubusercontent.com/byborh/careerLauncher/main/data/companies.md',

@@ -148,8 +148,6 @@ window.CL_CONFIG = {
     apiKey: "AIzaSy…",
     authDomain: "careerlauncher-ada.firebaseapp.com",
     projectId: "careerlauncher-ada",
-    storageBucket: "careerlauncher-ada.firebasestorage.app",
-    messagingSenderId: "123456789012",
     appId: "1:123456789012:web:abc123"
   },
   datasetUrl: 'https://raw.githubusercontent.com/YOUR-USERNAME/careerLauncher/main/data/companies.md',
@@ -157,6 +155,13 @@ window.CL_CONFIG = {
   appCheckSiteKey: null
 };
 ```
+
+Firebase gives you seven fields; only these four do anything here. The other
+three belong to products this app does not use — `storageBucket` (Cloud
+Storage), `messagingSenderId` (push notifications) and `measurementId`
+(Analytics, which is never loaded because `firebase/analytics` is never
+imported). Keeping them is harmless, `initializeApp` ignores what it has no
+SDK for; dropping them just makes a public file say only what is true.
 
 Three things to get right, because they are the usual mistakes:
 
