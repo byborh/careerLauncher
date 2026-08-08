@@ -43,10 +43,12 @@ test('signing in with local data into an empty account uploads it', async () => 
   assert.equal(cloud.calls.save.length, 1);
   assert.equal(cloud.calls.save[0].applications.length, 1);
   assert.equal($('trackerBody').children.length, 1, 'the row stayed on screen');
-  assert.match($('storageText').textContent, /alice@example\.com/);
-  assert.match($('storageBar').className, /is-synced/);
   assert.equal($('btnSignIn').hidden, true);
   assert.equal($('btnAccount').hidden, false);
+  assert.equal($('accountLabel').textContent, 'alice@example.com');
+  assert.equal($('syncDot').className, 'dot', 'a plain dot means synced');
+  assert.equal($('storageBar').hidden, true, 'nothing to warn about once synced');
+  assert.match($('dataStatus').textContent, /Synced to alice@example\.com/);
 });
 
 test('signing in on a fresh device adopts the account and overwrites nothing', async () => {

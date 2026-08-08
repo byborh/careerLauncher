@@ -203,6 +203,7 @@
   function renderPreview() {
     var tpl = currentTemplate();
     var map = tokens();
+    $('previewTo').textContent = selected ? selected.email : '—';
     $('previewSubject').value = tpl ? merge(tpl.subject, map) : '';
     $('previewBody').value = tpl ? merge(tpl.body, map) : '';
 
@@ -512,10 +513,22 @@
         tr.appendChild(el('td', { 'data-label': COLUMN_LABELS[i] }, [control]));
       });
 
+      // On a phone this row is a card and five of its nine fields are folded
+      // away; "More" is what unfolds them. It is hidden on wide screens.
+      var more = el('button', {
+        class: 'btn btn-sm btn-ghost row-more', type: 'button', text: 'More',
+        onclick: function () {
+          var open = tr.classList.toggle('is-open');
+          more.textContent = open ? 'Less' : 'More';
+        }
+      });
+
       tr.appendChild(el('td', null, [
+        more,
         el('button', {
-          class: 'btn btn-sm btn-danger', type: 'button', text: '✕',
+          class: 'btn btn-sm btn-ghost btn-danger', type: 'button', text: '✕',
           title: 'Delete this row',
+          'aria-label': 'Delete the application to ' + (a.company || 'this company'),
           onclick: function () {
             if (!confirm('Delete the application to ' + (a.company || 'this company') + '?')) return;
             state.applications = state.applications.filter(function (x) { return x.id !== a.id; });
@@ -663,48 +676,115 @@
     toast('Default templates restored.');
   }
 
+  /* ------------------------------------------------------------------ theme */
+
+  var THEME_KEY = 'careerlauncher-theme';
+  var THEME_ORDER = ['auto', 'light', 'dark'];
+  var THEME_LABEL = { auto: 'follow system', light: 'light', dark: 'dark' };
+  var THEME_ICON = {
+    auto: '<circle cx="12" cy="12" r="8.5"/><path d="M12 3.5a8.5 8.5 0 0 0 0 17z" fill="currentColor" stroke="none"/>',
+    light: '<path d="M12 3v1.5M12 19.5V21M3 12h1.5M19.5 12H21M5.6 5.6l1.1 1.1M17.3 17.3l1.1 1.1M18.4 5.6l-1.1 1.1M6.7 17.3l-1.1 1.1"/><circle cx="12" cy="12" r="4"/>',
+    dark: '<path d="M20.5 14.8A8.5 8.5 0 0 1 9.2 3.5a8.5 8.5 0 1 0 11.3 11.3Z"/>'
+  };
+
+  function storedTheme() {
+    try { return localStorage.getItem(THEME_KEY) || 'auto'; } catch (e) { return 'auto'; }
+  }
+
+  function prefersDark() {
+    return !!(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  }
+
+  function applyTheme(mode) {
+    var root = document.documentElement;
+    if (mode === 'auto') delete root.dataset.theme;
+    else root.dataset.theme = mode;
+
+    try {
+      if (mode === 'auto') localStorage.removeItem(THEME_KEY);
+      else localStorage.setItem(THEME_KEY, mode);
+    } catch (e) { /* private mode */ }
+
+    $('themeIcon').innerHTML = THEME_ICON[mode];
+    $('btnTheme').title = 'Theme: ' + THEME_LABEL[mode];
+
+    // Keep the phone's status bar in step with the page.
+    var dark = mode === 'dark' || (mode === 'auto' && prefersDark());
+    $('themeColor').setAttribute('content', dark ? '#16181c' : '#f6f6f3');
+  }
+
+  function initTheme() {
+    applyTheme(storedTheme());
+    $('btnTheme').addEventListener('click', function () {
+      var next = THEME_ORDER[(THEME_ORDER.indexOf(storedTheme()) + 1) % THEME_ORDER.length];
+      applyTheme(next);
+      toast('Theme: ' + THEME_LABEL[next] + '.');
+    });
+    if (!window.matchMedia) return;
+    var mq = window.matchMedia('(prefers-color-scheme: dark)');
+    var onChange = function () { if (storedTheme() === 'auto') applyTheme('auto'); };
+    if (mq.addEventListener) mq.addEventListener('change', onChange);
+    else if (mq.addListener) mq.addListener(onChange);
+  }
+
   /* ---------------------------------------------------------------- storage */
 
+  /**
+   * Three surfaces, deliberately unequal:
+   *   the account chip - always there, one glance, no reading
+   *   the alert bar    - only when something actually needs the user
+   *   the data card    - the whole story, in Profile, when they go looking
+   */
   function renderStorage(st) {
-    var bar = $('storageBar');
-    var text = $('storageText');
     var supported = window.CLStorage.supportsFS();
     var fileAttached = !!st.fileName;
 
-    bar.classList.remove('is-unsaved');
-    bar.classList.remove('is-synced');
-
-    if (st.mode === 'cloud') {
-      bar.classList.add('is-synced');
-      var who = st.user.email || st.user.name || 'your account';
-      var tail;
-      if (st.error) tail = ' · ⚠ ' + st.error;
-      else if (st.offline) tail = ' · offline, your changes are queued';
-      else if (st.saving || st.pending) tail = ' · syncing…';
-      else tail = ' · synced on every device';
-      text.textContent = '☁ ' + who + tail;
-    } else if (st.mode === 'file') {
-      text.textContent = '💾 Saving to: ' + st.fileName +
-        (st.saving ? ' · saving…' : (st.error ? ' · ⚠ ' + st.error : ' · saved'));
-    } else if (st.configBroken) {
-      bar.classList.add('is-unsaved');
-      text.textContent = '⚠ app/config.js failed to load - open your browser console for the ' +
-                         'syntax error. Running in browser-only mode until it is fixed.';
-    } else if (st.needsPermission) {
-      bar.classList.add('is-unsaved');
-      text.textContent = '⚠ Click “Reconnect file” to keep saving to ' + st.pendingName + '.';
-    } else {
-      bar.classList.add('is-unsaved');
-      text.textContent = (st.cloudAvailable
-        ? '⚠ This browser only. Sign in to sync your tracker to your phone and every other device.'
-        : supported
-          ? '⚠ Not saved to a file - your data lives in this browser only. Create a data file, or export to back up.'
-          : '⚠ This browser has no File System Access API - your data lives in this browser only. Export regularly to back up.');
-    }
-
     $('btnSignIn').hidden = !st.cloudAvailable || st.mode === 'cloud';
     $('btnAccount').hidden = st.mode !== 'cloud';
+
+    if (st.mode === 'cloud') {
+      $('accountLabel').textContent = st.user.email || st.user.name || 'Account';
+      $('syncDot').className = 'dot' +
+        (st.error ? ' is-error' : ((st.offline || st.saving || st.pending) ? ' is-busy' : ''));
+      $('btnAccount').title =
+        st.error ? 'Sync error: ' + st.error
+        : st.offline ? 'Offline — your changes are queued'
+        : (st.saving || st.pending) ? 'Syncing…'
+        : 'Synced on every device';
+    }
+
+    var alert = '';
+    var isError = false;
+    if (st.configBroken) {
+      alert = 'app/config.js failed to load — open your browser console for the syntax error. ' +
+              'Running in browser-only mode until it is fixed.';
+      isError = true;
+    } else if (st.error) {
+      alert = 'Sync error: ' + st.error;
+      isError = true;
+    } else if (st.needsPermission) {
+      alert = 'Click “Reconnect file” to keep saving to ' + st.pendingName + '.';
+    } else if (st.mode === 'local') {
+      alert = st.cloudAvailable
+        ? 'Your data lives in this browser only. Sign in to sync it to your phone and every other device.'
+        : supported
+          ? 'Your data lives in this browser only. Create a data file, or export regularly to back it up.'
+          : 'This browser has no File System Access API — your data lives here only. Export regularly to back it up.';
+    }
+    $('storageBar').hidden = !alert;
+    $('storageBar').classList.toggle('is-error', isError);
+    $('storageText').textContent = alert;
     $('btnReconnect').hidden = !st.needsPermission;
+
+    $('dataStatus').textContent =
+      st.mode === 'cloud'
+        ? '☁ Synced to ' + (st.user.email || 'your account') + '. Your account is the source of truth; ' +
+          'this browser keeps an offline copy so the app still works without a network.'
+        : st.mode === 'file'
+          ? '💾 Every change is written to ' + st.fileName + ' on your disk' +
+            (st.saving ? ' — saving…' : '.')
+          : '⚠ Browser storage only. Nothing leaves this browser, and nothing survives clearing it.';
+
     $('btnCreateFile').hidden = !supported || fileAttached || st.mode === 'cloud';
     $('btnOpenFile').hidden = !supported || fileAttached || st.mode === 'cloud';
   }
@@ -805,13 +885,20 @@
   /* ------------------------------------------------------------------ wiring */
 
   function switchScreen(name) {
+    closePreviewSheet();
     document.querySelectorAll('.screen').forEach(function (s) {
       s.classList.toggle('is-active', s.id === 'screen-' + name);
     });
     document.querySelectorAll('.tab').forEach(function (t) {
       t.classList.toggle('is-active', t.getAttribute('data-screen') === name);
     });
+    window.scrollTo(0, 0);
   }
+
+  /* On a phone the letter is a sheet over the form; on a desktop it is simply
+     always visible and these two are no-ops. */
+  function openPreviewSheet() { document.body.classList.add('preview-open'); }
+  function closePreviewSheet() { document.body.classList.remove('preview-open'); }
 
   function wire() {
     $('tabs').addEventListener('click', function (e) {
@@ -834,7 +921,12 @@
     $('btnCopyBody').addEventListener('click', function () {
       copyText($('previewBody').value, 'Body');
     });
-    $('btnLog').addEventListener('click', logApplication);
+    $('btnLog').addEventListener('click', function () {
+      logApplication();
+      closePreviewSheet();
+    });
+    $('btnShowPreview').addEventListener('click', openPreviewSheet);
+    $('btnHidePreview').addEventListener('click', closePreviewSheet);
 
     // Tracker
     $('viewFilters').addEventListener('click', function (e) {
@@ -971,6 +1063,7 @@
       ['authModal', 'accountModal'].forEach(function (id) {
         if (!$(id).hidden) closeModal(id);
       });
+      closePreviewSheet();
     });
 
     $('btnImportJSON').addEventListener('click', function () { $('importInput').click(); });
@@ -1006,6 +1099,7 @@
   /* -------------------------------------------------------------------- boot */
 
   function boot() {
+    initTheme();
     state = normalize(window.CLStorage.loadLocal());
 
     var cached = window.CLStorage.cachedCompanies();
