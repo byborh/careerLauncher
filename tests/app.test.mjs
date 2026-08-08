@@ -16,7 +16,58 @@ test('boots without a Firebase config and stays in local mode', async () => {
   assert.equal(window.CLStore.cloudAvailable(), false);
   assert.equal(window.CLStore.mode(), 'local');
   assert.equal($('btnSignIn').hidden, true, 'no sign-in button without a config');
-  assert.match($('storageBar').className, /is-unsaved/, 'the local-only bar is yellow');
+  assert.equal($('btnAccount').hidden, true);
+  assert.equal($('storageBar').hidden, false, 'browser-only storage is worth an alert');
+  // The exact wording depends on whether the browser has the File System
+  // Access API — jsdom does not — but every variant says the same thing.
+  assert.match($('storageText').textContent, /lives (in this browser|here) only/i);
+  assert.match($('dataStatus').textContent, /Browser storage only/i);
+});
+
+test('the theme starts on "follow system" and cycles through light and dark', async () => {
+  const { window, $, click } = await bootApp();
+  const root = window.document.documentElement;
+
+  assert.equal(root.dataset.theme, undefined, 'no attribute means "follow the system"');
+
+  click('btnTheme');
+  assert.equal(root.dataset.theme, 'light');
+  assert.equal($('themeColor').getAttribute('content'), '#f6f6f3');
+
+  click('btnTheme');
+  assert.equal(root.dataset.theme, 'dark');
+  assert.equal($('themeColor').getAttribute('content'), '#16181c');
+
+  click('btnTheme');
+  assert.equal(root.dataset.theme, undefined, 'back to following the system');
+});
+
+test('the letter shows who it is addressed to', async () => {
+  const { window, $ } = await bootApp();
+  assert.equal($('previewTo').textContent, '—', 'nothing picked yet');
+
+  $('companyList').querySelector('button.company')
+    .dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
+
+  assert.equal($('previewTo').textContent, $('selCompanyEmail').textContent);
+  assert.match($('previewTo').textContent, /@/);
+});
+
+test('on a phone the letter opens and closes as a sheet', async () => {
+  const { window, click } = await bootApp();
+  const body = window.document.body;
+
+  assert.ok(!body.classList.contains('preview-open'));
+  click('btnShowPreview');
+  assert.ok(body.classList.contains('preview-open'));
+  click('btnHidePreview');
+  assert.ok(!body.classList.contains('preview-open'));
+
+  // Switching screens must not leave the sheet hanging over the new one.
+  click('btnShowPreview');
+  window.document.querySelector('.tab[data-screen="tracker"]')
+    .dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
+  assert.ok(!body.classList.contains('preview-open'));
 });
 
 test('shows the bundled dataset and the three default templates', async () => {
