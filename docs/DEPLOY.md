@@ -316,23 +316,38 @@ You would have to be running this for a small country to leave the free tier.
 
 ## 10. Automatic deploys (optional)
 
-The repo ships [`.github/workflows/deploy.yml`](../.github/workflows/deploy.yml):
-it runs the rule tests and checks the dataset snapshot is current on every push
-and pull request, deploys a **preview channel** for each pull request, and
-deploys to **live** on `main`.
+[`.github/workflows/deploy.yml`](../.github/workflows/deploy.yml) has two jobs,
+and only one of them always runs:
 
-To enable it in your fork:
+- **verify** — the tests and the generated-file check, on every push and pull
+  request. No configuration, nothing to set up, works in a fresh fork.
+- **deploy** — preview channels for pull requests, live deploy on `main`.
+  **Skipped entirely** until you opt in.
+
+Deploying from CI is a convenience, not a requirement: `pnpm exec firebase
+deploy` from your laptop does exactly the same thing. So the default is off,
+and a fork you just cloned gets a green CI without touching a setting.
+
+### Turning deployment on
 
 ```bash
 pnpm exec firebase init hosting:github
 ```
 
-That creates the `FIREBASE_SERVICE_ACCOUNT` secret for you. Then add a
-repository **variable** (Settings > Secrets and variables > Actions >
-Variables) named `FIREBASE_PROJECT_ID` with your project ID.
+> **The trap everyone hits.** That command creates the service-account secret,
+> but it names it **`FIREBASE_SERVICE_ACCOUNT_<YOUR_PROJECT_ID>`** — not
+> `FIREBASE_SERVICE_ACCOUNT`, which is what the workflow reads. Open
+> **Settings > Secrets and variables > Actions**, see what name it actually
+> created, and either rename it or change the two references in the workflow.
+> A missing secret used to fail with a baffling `Failed to authenticate, have
+> you run firebase login?`; the workflow now says what is wrong instead.
 
-If you also want the workflow to push rules changes, grant the service account
-the **Firebase Rules Admin** role in Google Cloud IAM.
+Then add the repository **variable** — a variable, not a secret — named
+`FIREBASE_PROJECT_ID`, holding your project ID. **That variable is the on
+switch**: while it is unset, the deploy job never runs.
+
+If you also want CI to push rules changes, grant that service account the
+**Firebase Rules Admin** role in Google Cloud IAM.
 
 ---
 

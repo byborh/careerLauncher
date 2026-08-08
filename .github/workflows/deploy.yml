@@ -1,13 +1,24 @@
-name: Deploy
+name: CI
 
-# Firebase Hosting + Firestore rules, straight from the repo.
+# Two jobs, and only one of them always runs.
 #
-# Set this up once, in your fork:
-#   1. npm install -g firebase-tools
-#   2. firebase init hosting:github      (creates the FIREBASE_SERVICE_ACCOUNT secret for you)
-#      - or add the secret by hand: a service account JSON with the
-#        "Firebase Hosting Admin" and "Firebase Rules Admin" roles.
-#   3. Add a repository variable FIREBASE_PROJECT_ID with your project id.
+#   verify  - tests and generated-file checks. Always. No configuration needed.
+#   deploy  - Firebase Hosting + Firestore rules. OPT-IN, and skipped entirely
+#             until you set the FIREBASE_PROJECT_ID repository variable.
+#
+# Deploying from CI is a convenience, not a requirement: `pnpm exec firebase
+# deploy` from your laptop does the same thing. So the default is "don't", and
+# a fresh fork gets a green CI without touching a single setting.
+#
+# To turn deployment on:
+#   1. pnpm exec firebase init hosting:github
+#      It creates a service-account secret for you — but note it names it
+#      FIREBASE_SERVICE_ACCOUNT_<YOUR_PROJECT_ID>, not FIREBASE_SERVICE_ACCOUNT.
+#      Check Settings > Secrets and variables > Actions and either rename it to
+#      FIREBASE_SERVICE_ACCOUNT or change the two references below.
+#   2. Add the repository VARIABLE (not secret) FIREBASE_PROJECT_ID.
+#   3. For the rules step, grant that service account the
+#      "Firebase Rules Admin" role in Google Cloud IAM.
 #
 # The Firebase web config lives in app/config.js and is committed on purpose -
 # it is public, and it is what makes "fork, edit one file, deploy" possible.
@@ -54,13 +65,30 @@ jobs:
   deploy:
     needs: verify
     runs-on: ubuntu-latest
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    # No FIREBASE_PROJECT_ID variable means "I deploy from my laptop" — skip
+    # the whole job rather than fail it. (`secrets` is not readable in a job-
+    # level `if`; `vars` is, which is why the switch is a variable.)
+    if: >-
+      vars.FIREBASE_PROJECT_ID != '' &&
+      (github.event_name != 'pull_request' ||
+       github.event.pull_request.head.repo.full_name == github.repository)
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+
+      - name: The service-account secret must exist
+        env:
+          SA: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          if [ -z "$SA" ]; then
+            echo '::error::FIREBASE_PROJECT_ID is set but the FIREBASE_SERVICE_ACCOUNT secret is empty.'
+            echo '::error::"firebase init hosting:github" names it FIREBASE_SERVICE_ACCOUNT_<PROJECT_ID>.'
+            echo '::error::Rename it in Settings > Secrets and variables > Actions, or edit this workflow.'
+            exit 1
+          fi
 
       - name: Deploy Firestore rules
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
