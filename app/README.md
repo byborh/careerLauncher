@@ -109,11 +109,16 @@ pnpm run seed      # = node app/scripts/build-seed.js
 
 ## The "why this company" line
 
-The app **will not let you copy** an email whose "why this company" line is
-empty, still a placeholder, still the auto-seeded draft, or too short. That line
-is the difference between a read email and a deleted one, and no mail merge can
-write it for you. "Seed a draft from the description" gives you a starting point
-— you still have to rewrite it.
+That line is the difference between a read email and a deleted one, and no mail
+merge can write it for you. So the app tells you when it is missing, still the
+auto-seeded draft, still a placeholder, or so short it says nothing.
+
+**It tells you. It does not stop you.** Copying is always available: it is your
+email, some of them genuinely do not need that line, and an app that refuses to
+hand you your own text is an app that gets worked around.
+
+A template that never merges `{{why}}` — a follow-up, for instance — says
+nothing at all about it.
 
 ## Files
 

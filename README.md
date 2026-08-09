@@ -44,7 +44,7 @@ Two things that work together:
 | | |
 |---|---|
 | **The dataset** — [`data/companies.md`](data/companies.md) | 129 verified, publicly listed hiring emails from tech companies, each with a source URL and a verification date. Open data, ODC-BY. |
-| **The tracker** — [`app/`](app/) | Pick a company, merge a template with your profile into a ready-to-send email (it makes you write the "why this company" line yourself), log it, and get told who still owes you a reply. |
+| **The tracker** — [`app/`](app/) | Pick a company, merge a template with your profile into a ready-to-send email (it nudges you to write the "why this company" line yourself), log it, and get told who still owes you a reply. |
 
 The tracker never sends anything. You copy the email and send it from your own mail client, like a human.
 

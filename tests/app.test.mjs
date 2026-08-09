@@ -83,27 +83,52 @@ test('shows the bundled dataset and the three default templates', async () => {
   assert.ok(window.CL_SEED_COMPANIES.length > $('companyList').children.length);
 });
 
-test('refuses to copy an email until the "why" line is written by a human', async () => {
+test('advises about the "why" line but never blocks copying', async () => {
   const { window, $, click, type } = await bootApp();
 
   $('companyList').querySelector('button.company')
     .dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
 
-  assert.equal($('btnCopyAll').disabled, true);
-  assert.match($('copyBlocker').textContent, /why this company/i);
+  // Empty: say something, block nothing. Some emails do not need this line.
+  assert.equal($('btnCopyAll').disabled, false, 'copying is the user\'s call, always');
+  assert.equal($('btnCopyBody').disabled, false);
+  assert.match($('whyNote').textContent, /why this company/i);
 
   type('whyInput', 'too short');
-  assert.equal($('btnCopyAll').disabled, true, 'a token effort is still blocked');
+  assert.equal($('btnCopyAll').disabled, false);
+  assert.match($('whyNote').textContent, /very short/i);
 
   type('whyInput', 'Your work on distributed storage is the problem I want to spend my career on.');
-  assert.equal($('btnCopyAll').disabled, false);
+  assert.equal($('whyNote').hidden, true, 'a real line earns silence');
+  assert.equal($('whyState').textContent, '✓ personalized');
   assert.ok($('previewBody').value.includes($('selCompanyName').textContent),
             'the company name was merged into the body');
   assert.ok(!/\{\{/.test($('previewBody').value), 'no token was left unmerged');
 
-  // Seeding a draft must not count as writing it yourself.
+  // Seeding a draft is not the same as writing it yourself - still only advice.
   click('btnSeedWhy');
-  assert.equal($('btnCopyAll').disabled, true);
+  assert.match($('whyNote').textContent, /auto-generated draft/i);
+  assert.equal($('btnCopyAll').disabled, false);
+});
+
+test('a template that never merges {{why}} does not nag about it', async () => {
+  const { window, $ } = await bootApp();
+
+  $('companyList').querySelector('button.company')
+    .dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
+  assert.equal($('whyNote').hidden, false, 'the default template does use {{why}}');
+
+  // Strip the token out of the selected template and re-render.
+  const id = $('templatePick').value;
+  const tplPick = $('tplPick');
+  tplPick.value = id;
+  tplPick.dispatchEvent(new window.Event('change', { bubbles: true }));
+  $('tplBody').value = 'Hello {{company}} team,\n\nShort note, no personalisation token.\n\n{{name}}';
+  $('tplBody').dispatchEvent(new window.Event('input', { bubbles: true }));
+
+  assert.equal($('whyNote').hidden, true, 'nothing to advise when nothing merges it');
+  assert.equal($('whyState').textContent, 'not used by this template');
+  assert.equal($('btnCopyAll').disabled, false);
 });
 
 test('logs an application, orders it newest first and persists it', async () => {

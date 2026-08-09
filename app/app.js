@@ -187,16 +187,33 @@
     return state.templates.filter(function (t) { return t.id === id; })[0] || state.templates[0] || null;
   }
 
-  /** Why is the email not ready to copy? Returns a string reason, or ''. */
-  function copyBlockReason() {
+  function usesWhy(tpl) {
+    return !!tpl && /\{\{\s*why\s*\}\}/.test(String(tpl.subject) + ' ' + String(tpl.body));
+  }
+
+  /**
+   * The "why this company" line is still the difference between a read email
+   * and a deleted one — but it is advice, not a gate. Plenty of legitimate
+   * emails do not need it, and a template that never merges {{why}} (a
+   * follow-up, say) should not nag about it at all.
+   *
+   * Returns something worth saying, or '' when there is nothing to say.
+   * It never prevents anything.
+   */
+  function whyAdvice(tpl) {
+    if (!usesWhy(tpl)) return '';
     var why = $('whyInput').value.trim();
-    if (!selected) return 'Pick a company first.';
-    if (!why) return 'Write the “why this company” line - a generic mail-merge email gets deleted.';
-    if (whySeed && why === whySeed.trim()) {
-      return 'That “why this company” line is the auto-generated draft. Rewrite it in your own words.';
+    if (!why) {
+      return 'No “why this company” line. This template merges one, so the email will go out ' +
+             'with a visible ⟨…⟩ gap — and without it, it reads as a mail merge.';
     }
-    if (/⟨|REWRITE/i.test(why)) return 'The “why this company” line still contains the placeholder text.';
-    if (why.length < 25) return 'The “why this company” line is too short to be convincing - be specific.';
+    if (whySeed && why === whySeed.trim()) {
+      return 'That line is still the auto-generated draft. Rewriting it in your own words is the whole point.';
+    }
+    if (/⟨|REWRITE/i.test(why)) return 'That line still contains placeholder text.';
+    if (why.length < 25) {
+      return 'That line is very short. One specific thing — a product, a paper, a release — beats a sentence of praise.';
+    }
     return '';
   }
 
@@ -207,17 +224,24 @@
     $('previewSubject').value = tpl ? merge(tpl.subject, map) : '';
     $('previewBody').value = tpl ? merge(tpl.body, map) : '';
 
-    var reason = copyBlockReason();
-    var blocker = $('copyBlocker');
-    blocker.hidden = !reason;
-    blocker.textContent = reason ? '⚠ ' + reason : '';
-    $('btnCopyAll').disabled = !!reason;
-    $('btnCopyBody').disabled = !!reason;
+    // Copying is never blocked: it is your email, and you decide what goes in
+    // it. Logging still needs a company, because that is what gets logged.
+    var advice = whyAdvice(tpl);
+    var note = $('whyNote');
+    note.hidden = !advice;
+    note.textContent = advice ? '💡 ' + advice : '';
     $('btnLog').disabled = !selected;
 
-    $('whyState').textContent = reason ? '' : '✓ personalized';
-    $('whyState').className = 'small' + (reason ? '' : ' ok');
-    $('whyInput').classList.toggle('field-error', !!reason && !!selected);
+    $('whyState').className = 'small';
+    if (!usesWhy(tpl)) {
+      $('whyState').textContent = 'not used by this template';
+      $('whyState').className = 'small muted';
+    } else if (advice) {
+      $('whyState').textContent = '';
+    } else {
+      $('whyState').textContent = '✓ personalized';
+      $('whyState').className = 'small ok';
+    }
 
     var cv = state.profile.cvFileName;
     $('cvReminder').textContent = cv
