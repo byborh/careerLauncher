@@ -6,7 +6,7 @@
  *
  * Bump CACHE when you change any shell file, or the old one is served forever.
  */
-var CACHE = 'careerlauncher-shell-v1';
+var CACHE = 'careerlauncher-shell-v2';
 
 var SHELL = [
   './',
@@ -63,33 +63,20 @@ self.addEventListener('fetch', function (event) {
     return;
   }
 
-  // config.js is the file people actually edit and redeploy. Serving a stale
-  // copy of it means a fixed Firebase config appears not to have worked, so it
-  // goes to the network first and only falls back to the cache when offline.
-  if (url.pathname.endsWith('/config.js')) {
-    event.respondWith(
-      fetch(req).then(function (res) {
-        if (res && res.ok && res.type === 'basic') {
-          var copy = res.clone();
-          caches.open(CACHE).then(function (c) { c.put(req, copy); });
-        }
-        return res;
-      }).catch(function () { return caches.match(req); })
-    );
-    return;
-  }
-
-  // Everything else: serve the cache immediately, refresh it in the background.
+  // Everything else in the shell: network first, cache as the offline copy.
+  //
+  // This used to be stale-while-revalidate, which meant the first load after a
+  // deploy served the OLD file and only refreshed it in the background - so a
+  // fix you just shipped looked like it had not worked, and you only saw it on
+  // the second reload. The shell is a handful of small files with no filename
+  // fingerprinting; a round-trip when online is cheaper than that confusion.
   event.respondWith(
-    caches.match(req).then(function (hit) {
-      var live = fetch(req).then(function (res) {
-        if (res && res.ok && res.type === 'basic') {
-          var copy = res.clone();
-          caches.open(CACHE).then(function (c) { c.put(req, copy); });
-        }
-        return res;
-      }).catch(function () { return hit; });
-      return hit || live;
-    })
+    fetch(req).then(function (res) {
+      if (res && res.ok && res.type === 'basic') {
+        var copy = res.clone();
+        caches.open(CACHE).then(function (c) { c.put(req, copy); });
+      }
+      return res;
+    }).catch(function () { return caches.match(req); })
   );
 });

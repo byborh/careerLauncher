@@ -193,7 +193,9 @@ svg { fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round
 .alertbar.is-error { background: var(--danger-bg); color: var(--danger); }
 .alert-actions { display: flex; gap: 6px; flex: none; }
 
-main { padding: 22px 20px 32px; max-width: 1360px; margin: 0 auto; }
+/* Wide enough that the ten-column tracker fits without scrolling on a laptop;
+   the compose screen simply gets a roomier letter. */
+main { padding: 22px 20px 32px; max-width: 1480px; margin: 0 auto; }
 
 .screen { display: none; }
 .screen.is-active { display: block; }
@@ -423,26 +425,36 @@ code { font-family: ui-monospace, Consolas, monospace; font-size: 12px; backgrou
 }
 table.tracker { border-collapse: collapse; width: 100%; }
 
-/* Column widths belong to the table layout only. Below 700px each row becomes
-   a card and these would squeeze the fields all over again, so they live in a
-   min-width query and simply do not exist on a phone. */
+/* Column widths, applied through the <colgroup> in index.html.
+ *
+ * table-layout: fixed, because `min-width` only sets a floor and a date input
+ * asks for far more than that intrinsically - the columns kept negotiating the
+ * table wider than its container and pushing Notes off the right edge. Fixed
+ * layout ends the negotiation: these are the widths.
+ *
+ * The nine fixed columns below sum to 1055px. `main` is at most 1480px wide
+ * with 40px of padding, so on a wide screen Notes gets ~385px, and the
+ * min-width keeps it at ~265px before the wrapper starts scrolling. Every
+ * number here was measured against a real render, not guessed - a date input
+ * needs ~128px for "dd/mm/yyyy" plus its picker, and a status select ~110px
+ * for "interview".
+ *
+ * Below 701px each row becomes a card, the table layout algorithm no longer
+ * runs, and none of this applies.
+ */
 @media (min-width: 701px) {
-  /* table-layout: fixed, because `min-width` only sets a floor and a date
-     input asks for far more than that intrinsically - the columns kept
-     negotiating the table wider than its container and pushing Notes off the
-     right edge. Fixed layout ends the negotiation. */
-  table.tracker { table-layout: fixed; min-width: 1340px; }
+  table.tracker { table-layout: fixed; min-width: 1320px; }
 
-  table.tracker th:nth-child(1), table.tracker td:nth-child(1) { width: 120px; }
-  table.tracker th:nth-child(2), table.tracker td:nth-child(2) { width: 170px; }
-  table.tracker th:nth-child(3), table.tracker td:nth-child(3) { width: 130px; }
-  table.tracker th:nth-child(4), table.tracker td:nth-child(4) { width: 140px; }
-  table.tracker th:nth-child(5), table.tracker td:nth-child(5) { width: 140px; }
-  table.tracker th:nth-child(6), table.tracker td:nth-child(6) { width: 120px; }
-  table.tracker th:nth-child(7), table.tracker td:nth-child(7) { width: 140px; }
-  table.tracker th:nth-child(8), table.tracker td:nth-child(8) { width: 140px; }
-  table.tracker th:nth-child(10), table.tracker td:nth-child(10) { width: 40px; }
-  /* Notes gets no width on purpose: it absorbs whatever the window has left. */
+  .col-company       { width: 115px; }
+  .col-email         { width: 160px; }
+  .col-role          { width: 120px; }
+  .col-template      { width: 130px; }
+  .col-dateSent      { width: 128px; }
+  .col-status        { width: 110px; }
+  .col-responseDate  { width: 128px; }
+  .col-followUpOn    { width: 128px; }
+  .col-actions       { width:  36px; }
+  /* .col-notes gets no width on purpose - it absorbs the rest. */
 }
 table.tracker th {
   text-align: left; font-size: 11.5px; font-weight: 600; color: var(--muted);
@@ -614,48 +626,49 @@ body.modal-open { overflow: hidden; }
   }
   table.tracker input, table.tracker select { border-color: var(--line); background: var(--field); }
 
-  /* Four things answer "where am I with this one?". The other five are detail,
-     folded away until asked for — a nine-field card is not a phone screen. */
-  table.tracker td:nth-child(1) { order: 1; grid-template-columns: 1fr; padding-bottom: 6px; }
-  table.tracker td:nth-child(6) { order: 2; }
-  table.tracker td:nth-child(5) { order: 3; }
-  table.tracker td:nth-child(8) { order: 4; }
-  table.tracker td:nth-child(2) { order: 5; }
-  table.tracker td:nth-child(3) { order: 6; }
-  table.tracker td:nth-child(4) { order: 7; }
-  table.tracker td:nth-child(7) { order: 8; }
-  table.tracker td:nth-child(9) { order: 9; }
-  table.tracker tr:not(.is-open) td:nth-child(2),
-  table.tracker tr:not(.is-open) td:nth-child(3),
-  table.tracker tr:not(.is-open) td:nth-child(4),
-  table.tracker tr:not(.is-open) td:nth-child(7),
-  table.tracker tr:not(.is-open) td:nth-child(9) { display: none; }
+  /* Four fields answer "where am I with this one?". The other five are detail,
+     folded away behind "More" — a nine-field card is not a phone screen. */
+  .col-company      { order: 1; }
+  .col-status       { order: 2; }
+  .col-dateSent     { order: 3; }
+  .col-followUpOn   { order: 4; }
+  .col-email        { order: 5; }
+  .col-role         { order: 6; }
+  .col-template     { order: 7; }
+  .col-responseDate { order: 8; }
+  .col-notes        { order: 9; }
+  table.tracker tr:not(.is-open) .col-email,
+  table.tracker tr:not(.is-open) .col-role,
+  table.tracker tr:not(.is-open) .col-template,
+  table.tracker tr:not(.is-open) .col-responseDate,
+  table.tracker tr:not(.is-open) .col-notes { display: none; }
 
-  table.tracker td:nth-child(1)::before { content: none; }
-  table.tracker td:nth-child(1) input {
+  table.tracker .col-company { grid-template-columns: 1fr; padding-bottom: 6px; }
+  table.tracker .col-company::before { content: none; }
+  table.tracker .col-company input {
     font-size: 17px; font-weight: 600; padding: 0;
     border-color: transparent; background: transparent;
   }
-  table.tracker td:nth-child(6) select { font-weight: 600; }
+  table.tracker .col-status select { font-weight: 600; }
 
   /* A 38% label column would leave a sentence about four words of room, so
      notes get their label above and the whole width below. */
-  table.tracker td:nth-child(9) {
+  table.tracker .col-notes {
     grid-template-columns: 1fr; gap: 5px; min-width: 0;
     padding-top: 8px;
   }
-  table.tracker td:nth-child(9) .cell-notes {
+  table.tracker .col-notes .cell-notes {
     border-color: var(--line); background: var(--field);
     padding: 9px 11px; min-height: 44px;
   }
 
-  table.tracker td:last-child {
+  table.tracker .col-actions {
     order: 10;
     display: flex; justify-content: space-between; align-items: center;
     width: 100%; padding: 0; margin-top: 10px;
     padding-top: 10px; border-top: 1px solid var(--line);
   }
-  table.tracker td:last-child::before { content: none; }
+  table.tracker .col-actions::before { content: none; }
   .row-more { display: inline-flex; }
 
   .dash { gap: 7px; }

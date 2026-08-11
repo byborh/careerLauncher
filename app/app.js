@@ -545,10 +545,26 @@
     return state.applications;
   }
 
-  // Below 760px the table becomes one card per row and the <thead> is hidden,
-  // so every cell has to carry its own label. Same order as the <thead>.
-  var COLUMN_LABELS = ['Company', 'Email', 'Role', 'Template', 'Date sent',
-                       'Status', 'Response date', 'Follow-up on', 'Notes'];
+  /**
+   * The tracker columns, in the order the <thead> and <colgroup> declare them.
+   *
+   * Each cell gets `col-<key>` as a class and the header text as `data-label`,
+   * so the phone layout can name the columns it reorders and the labels it
+   * shows instead of counting positions. Reordering here, in the <thead> and
+   * in the <colgroup> is one visible change in three adjacent places, rather
+   * than a silent mismatch with a pile of :nth-child rules.
+   */
+  var COLUMNS = [
+    { key: 'company', label: 'Company' },
+    { key: 'email', label: 'Email' },
+    { key: 'role', label: 'Role' },
+    { key: 'template', label: 'Template' },
+    { key: 'dateSent', label: 'Date sent' },
+    { key: 'status', label: 'Status' },
+    { key: 'responseDate', label: 'Response date' },
+    { key: 'followUpOn', label: 'Follow-up on' },
+    { key: 'notes', label: 'Notes' }
+  ];
 
   function renderTrackerRows() {
     var body = $('trackerBody');
@@ -568,7 +584,10 @@
         cellInput(a, 'followUpOn', 'date'),
         cellNotes(a)
       ].forEach(function (control, i) {
-        tr.appendChild(el('td', { 'data-label': COLUMN_LABELS[i] }, [control]));
+        tr.appendChild(el('td', {
+          class: 'col-' + COLUMNS[i].key,
+          'data-label': COLUMNS[i].label
+        }, [control]));
       });
 
       // On a phone this row is a card and five of its nine fields are folded
@@ -584,7 +603,7 @@
         }
       });
 
-      tr.appendChild(el('td', null, [
+      tr.appendChild(el('td', { class: 'col-actions' }, [
         more,
         el('button', {
           class: 'btn btn-sm btn-ghost btn-danger', type: 'button', text: '✕',

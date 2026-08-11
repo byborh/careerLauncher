@@ -176,17 +176,27 @@ test('notes are a growing textarea, not a one-line input', async () => {
   assert.equal(again.value, long);
 });
 
-test('every tracker cell carries the label its phone layout needs', async () => {
+test('the tracker columns line up across colgroup, thead and cells', async () => {
   const { $, click } = await bootApp();
   click('btnAddRow');
 
-  const labels = [...$('trackerBody').querySelectorAll('td[data-label]')]
-    .map((td) => td.getAttribute('data-label'));
+  // Column order is declared in three places - <colgroup>, <thead> and the
+  // cells app.js builds - and the CSS names columns rather than counting them.
+  // A mismatch would silently apply the wrong width and the wrong phone
+  // label, so it is worth one assertion.
+  const cells = [...$('trackerBody').querySelectorAll('td')];
+  const cols = [...$('trackerTable').querySelectorAll('colgroup col')]
+    .map((c) => c.className);
+
+  assert.equal(cells.length, cols.length, 'one <col> per cell, actions included');
+  assert.deepEqual(cells.map((td) => td.className), cols,
+                   'each cell must carry the class of the <col> above it');
+
+  const labels = cells.map((td) => td.getAttribute('data-label')).filter(Boolean);
   const headers = [...$('trackerTable').querySelectorAll('thead th')]
     .map((th) => th.textContent).filter(Boolean);
-
   assert.deepEqual(labels, headers,
-                   'below 760px the <thead> is hidden, so the labels must match it exactly');
+                   'below 700px the <thead> is hidden, so the labels must match it exactly');
 });
 
 test('the dialogs open, close and release the scroll lock', async () => {

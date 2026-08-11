@@ -192,6 +192,17 @@
 
   <div class="tablewrap">
     <table class="tracker" id="trackerTable">
+      <!-- Column widths live here, next to the header they describe, so that
+           moving a column moves its width with it. Sizes are in styles.css,
+           under a min-width query - on a phone each row becomes a card and
+           these are ignored. "notes" is deliberately given no width: it takes
+           whatever the window has left. -->
+      <colgroup>
+        <col class="col-company"><col class="col-email"><col class="col-role">
+        <col class="col-template"><col class="col-dateSent"><col class="col-status">
+        <col class="col-responseDate"><col class="col-followUpOn"><col class="col-notes">
+        <col class="col-actions">
+      </colgroup>
       <thead>
         <tr>
           <th>Company</th><th>Email</th><th>Role</th><th>Template</th>
