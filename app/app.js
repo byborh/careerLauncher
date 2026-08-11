@@ -471,6 +471,40 @@
     });
   }
 
+  /** Grow a textarea to exactly the height of its own text. */
+  function fitToText(area) {
+    area.style.height = 'auto';
+    // scrollHeight is 0 inside a display:none screen; leave the height alone
+    // rather than collapsing the field, and let fitAllNotes() redo it when the
+    // tracker is actually on screen.
+    if (!area.scrollHeight) { area.style.height = ''; return; }
+    area.style.height = Math.max(area.scrollHeight, 34) + 'px';
+  }
+
+  function fitAllNotes() {
+    document.querySelectorAll('.cell-notes').forEach(function (a) { fitToText(a); });
+  }
+
+  /**
+   * Notes are the one free-text field here, and the useful ones are sentences,
+   * not keywords: "they said the roles aren't open yet and told me to register
+   * on their site". A one-line input showed the first four words of that and
+   * hid the rest, so this is a textarea that grows to fit what you wrote.
+   */
+  function cellNotes(a) {
+    return el('textarea', {
+      class: 'cell-notes',
+      rows: '1',
+      placeholder: 'What did they say? What is your next move?',
+      'data-key': a.id + ':notes',
+      // A textarea's value is its text content - setAttribute('value') does
+      // nothing here, unlike on an <input>.
+      text: a.notes || '',
+      oninput: function (e) { fitToText(e.target); },
+      onchange: function (e) { updateApp(a.id, 'notes', e.target.value); }
+    });
+  }
+
   function statusSelect(a) {
     var meta = statusMeta(a.status);
     var sel = el('select', {
@@ -532,7 +566,7 @@
         statusSelect(a),
         cellInput(a, 'responseDate', 'date'),
         cellInput(a, 'followUpOn', 'date'),
-        cellInput(a, 'notes')
+        cellNotes(a)
       ].forEach(function (control, i) {
         tr.appendChild(el('td', { 'data-label': COLUMN_LABELS[i] }, [control]));
       });
@@ -544,6 +578,9 @@
         onclick: function () {
           var open = tr.classList.toggle('is-open');
           more.textContent = open ? 'Less' : 'More';
+          // The notes field was display:none a moment ago and could not be
+          // measured; now it can.
+          if (open) fitAllNotes();
         }
       });
 
@@ -564,12 +601,14 @@
       body.appendChild(tr);
     });
 
+    fitAllNotes();
+
     $('trackerEmpty').hidden = rows.length > 0;
     $('trackerTable').hidden = rows.length === 0;
     if (rows.length === 0) {
       $('trackerEmpty').textContent = state.applications.length
         ? 'Nothing in this view. Good news, arguably.'
-        : 'No applications yet. Compose one and hit “Log this application”.';
+        : 'No applications yet. Compose one and hit “Log it”.';
     }
   }
 
@@ -917,6 +956,9 @@
       t.classList.toggle('is-active', t.getAttribute('data-screen') === name);
     });
     window.scrollTo(0, 0);
+    // The tracker was display:none when its rows were built, so nothing could
+    // be measured then. Now that it is on screen, size the notes for real.
+    if (name === 'tracker') fitAllNotes();
   }
 
   /* On a phone the letter is a sheet over the form; on a desktop it is simply
@@ -1106,6 +1148,10 @@
       });
       e.target.value = '';
     });
+
+    // Column widths change with the window, so the notes rewrap and need
+    // re-measuring.
+    window.addEventListener('resize', fitAllNotes);
 
     window.addEventListener('beforeunload', function () { window.CLStore.flush(); });
     document.addEventListener('visibilitychange', function () {

@@ -152,6 +152,30 @@ test('logs an application, orders it newest first and persists it', async () => 
   assert.ok(state.applications[0].createdAt >= state.applications[1].createdAt);
 });
 
+test('notes are a growing textarea, not a one-line input', async () => {
+  const { window, $, click } = await bootApp();
+  click('btnAddRow');
+
+  const notes = $('trackerBody').querySelector('[data-key$=":notes"]');
+  assert.equal(notes.tagName, 'TEXTAREA', 'a sentence does not fit in an <input>');
+  assert.ok(notes.classList.contains('cell-notes'));
+
+  const long = "They said the roles aren't open yet and told me to register on " +
+               'their site to hear about them as soon as they are created.';
+  notes.value = long;
+  notes.dispatchEvent(new window.Event('input', { bubbles: true }));
+  notes.dispatchEvent(new window.Event('change', { bubbles: true }));
+
+  // The whole note is stored, not the first few words.
+  assert.equal(JSON.parse(window.localStorage.getItem('careerlauncher-state'))
+    .applications[0].notes, long);
+  // And it survives a re-render as the textarea's own content.
+  click('btnAddRow');
+  const again = $('trackerBody').querySelector('[data-key$=":notes"][data-key^="' +
+    notes.getAttribute('data-key').split(':')[0] + '"]');
+  assert.equal(again.value, long);
+});
+
 test('every tracker cell carries the label its phone layout needs', async () => {
   const { $, click } = await bootApp();
   click('btnAddRow');

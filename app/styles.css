@@ -421,7 +421,29 @@ code { font-family: ui-monospace, Consolas, monospace; font-size: 12px; backgrou
   background: var(--surface); border: 1px solid var(--line);
   border-radius: var(--radius); overflow-x: auto;
 }
-table.tracker { border-collapse: collapse; width: 100%; min-width: 1080px; }
+table.tracker { border-collapse: collapse; width: 100%; }
+
+/* Column widths belong to the table layout only. Below 700px each row becomes
+   a card and these would squeeze the fields all over again, so they live in a
+   min-width query and simply do not exist on a phone. */
+@media (min-width: 701px) {
+  /* table-layout: fixed, because `min-width` only sets a floor and a date
+     input asks for far more than that intrinsically - the columns kept
+     negotiating the table wider than its container and pushing Notes off the
+     right edge. Fixed layout ends the negotiation. */
+  table.tracker { table-layout: fixed; min-width: 1340px; }
+
+  table.tracker th:nth-child(1), table.tracker td:nth-child(1) { width: 120px; }
+  table.tracker th:nth-child(2), table.tracker td:nth-child(2) { width: 170px; }
+  table.tracker th:nth-child(3), table.tracker td:nth-child(3) { width: 130px; }
+  table.tracker th:nth-child(4), table.tracker td:nth-child(4) { width: 140px; }
+  table.tracker th:nth-child(5), table.tracker td:nth-child(5) { width: 140px; }
+  table.tracker th:nth-child(6), table.tracker td:nth-child(6) { width: 120px; }
+  table.tracker th:nth-child(7), table.tracker td:nth-child(7) { width: 140px; }
+  table.tracker th:nth-child(8), table.tracker td:nth-child(8) { width: 140px; }
+  table.tracker th:nth-child(10), table.tracker td:nth-child(10) { width: 40px; }
+  /* Notes gets no width on purpose: it absorbs whatever the window has left. */
+}
 table.tracker th {
   text-align: left; font-size: 11.5px; font-weight: 600; color: var(--muted);
   text-transform: uppercase; letter-spacing: .04em;
@@ -429,11 +451,24 @@ table.tracker th {
 }
 table.tracker td { padding: 4px 6px; border-bottom: 1px solid var(--line); vertical-align: middle; }
 table.tracker tr:last-child td { border-bottom: 0; }
-table.tracker input, table.tracker select {
+table.tracker input, table.tracker select, table.tracker textarea {
   border-color: transparent; background: transparent; padding: 6px 7px;
 }
-table.tracker input:hover, table.tracker select:hover { border-color: var(--line-strong); }
+table.tracker input:hover, table.tracker select:hover,
+table.tracker textarea:hover { border-color: var(--line-strong); }
 table.tracker tr.is-due td { background: var(--warn-bg); }
+table.tracker td { vertical-align: top; }
+table.tracker td > input, table.tracker td > select { margin-top: 4px; }
+
+/* Notes hold sentences, not keywords - the field grows to the height of what
+   was actually written instead of showing the first four words. */
+.cell-notes {
+  display: block;
+  min-height: 34px;
+  line-height: 1.45;
+  resize: none;          /* it sizes itself; a drag handle would fight that */
+  overflow-y: auto;      /* safety net: scroll rather than clip if sizing fails */
+}
 
 .st { border-radius: 5px; font-weight: 500; }
 .st-pending { color: var(--muted); }
@@ -602,6 +637,17 @@ body.modal-open { overflow: hidden; }
     border-color: transparent; background: transparent;
   }
   table.tracker td:nth-child(6) select { font-weight: 600; }
+
+  /* A 38% label column would leave a sentence about four words of room, so
+     notes get their label above and the whole width below. */
+  table.tracker td:nth-child(9) {
+    grid-template-columns: 1fr; gap: 5px; min-width: 0;
+    padding-top: 8px;
+  }
+  table.tracker td:nth-child(9) .cell-notes {
+    border-color: var(--line); background: var(--field);
+    padding: 9px 11px; min-height: 44px;
+  }
 
   table.tracker td:last-child {
     order: 10;
